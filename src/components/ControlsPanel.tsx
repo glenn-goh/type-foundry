@@ -25,6 +25,7 @@ export default function ControlsPanel() {
   const [resetOpen, setResetOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeSource, setActiveSource] = useState<string | null>(null);
+  const [isCustomRatio, setIsCustomRatio] = useState(false);
 
   // Determine current active label
   const activeLabel = (() => {
