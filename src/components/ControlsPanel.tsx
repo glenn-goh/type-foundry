@@ -205,7 +205,7 @@ export default function ControlsPanel() {
             }}
             className="h-7 text-center text-xs" />
           <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
-            onClick={() => updateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}>
+            onClick={() => wrappedUpdateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}>
             <Plus className="h-3 w-3" />
           </Button>
           <span className="text-muted-foreground text-xs">px</span>
