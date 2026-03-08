@@ -121,7 +121,7 @@ export default function LandingPagePreview() {
 
         {/* Product UI */}
         {config.previewMode === "product" && (
-          <div className="flex-1 p-6 space-y-6">
+          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
             <div className="flex items-center justify-between">
               <h2 style={hStyle("h3")}>Dashboard</h2>
               <button className="rounded-md px-3 py-1.5 text-xs font-medium"
