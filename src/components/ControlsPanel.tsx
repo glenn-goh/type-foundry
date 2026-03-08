@@ -66,8 +66,20 @@ export default function ControlsPanel() {
   };
 
   const handleApplyPreset = (key: string) => {
-    applyPreset(PRESETS[key].config);
-    setActiveSource(PRESETS[key].label);
+    const preset = PRESETS[key];
+    // Preserve current theme colors when in dark mode
+    const isDark = config.theme === "dark";
+    const filteredConfig = { ...preset.config };
+    if (isDark && filteredConfig.body) {
+      const { textColor, backgroundColor, ...restBody } = filteredConfig.body;
+      filteredConfig.body = restBody as any;
+    }
+    if (isDark && filteredConfig.headings) {
+      const { color, ...restHeadings } = filteredConfig.headings;
+      filteredConfig.headings = restHeadings as any;
+    }
+    applyPreset(filteredConfig);
+    setActiveSource(preset.label);
   };
 
   const handleLoadSystem = (id: string) => {
