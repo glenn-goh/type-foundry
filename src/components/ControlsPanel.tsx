@@ -1,5 +1,5 @@
 import { useAppConfig } from "@/context/AppConfigContext";
-import { SCALE_RATIOS, FONT_FAMILIES } from "@/lib/types";
+import { SCALE_RATIOS, FONT_FAMILIES, type RoundingGrid } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -102,6 +102,24 @@ export default function ControlsPanel() {
               onClick={() => updateConfig({ unit: u })}
             >
               {u}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Rounding */}
+      <div className="space-y-2">
+        <Label>Rounding</Label>
+        <div className="flex gap-1">
+          {([["none", "Off"], ["4px", "4px"], ["8px", "8px"]] as const).map(([value, label]) => (
+            <Button
+              key={value}
+              variant={config.rounding === value ? "default" : "outline"}
+              size="sm"
+              className="h-7 flex-1 text-xs"
+              onClick={() => updateConfig({ rounding: value as RoundingGrid })}
+            >
+              {label}
             </Button>
           ))}
         </div>

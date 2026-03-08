@@ -35,10 +35,13 @@ export interface ResponsiveSettings {
   scaleRatio: number | null;
 }
 
+export type RoundingGrid = "none" | "4px" | "8px";
+
 export interface AppConfig {
   baseFontSize: number;
   scaleRatio: number;
   unit: Unit;
+  rounding: RoundingGrid;
   body: BodySettings;
   headings: HeadingSettings;
   responsive: ResponsiveSettings;
@@ -70,6 +73,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   baseFontSize: 16,
   scaleRatio: 1.2,
   unit: "rem",
+  rounding: "none",
   body: {
     fontFamily: "Inter",
     fontWeight: 500,

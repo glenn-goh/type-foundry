@@ -1,4 +1,4 @@
-import type { ScaleEntry, ScaleToken, Unit } from "./types";
+import type { RoundingGrid, ScaleEntry, ScaleToken, Unit } from "./types";
 
 const TOKEN_EXPONENTS: Record<ScaleToken, number> = {
   h1: 6,
@@ -12,11 +12,18 @@ const TOKEN_EXPONENTS: Record<ScaleToken, number> = {
   xs: -2,
 };
 
-export function calculateTypeScale(base: number, ratio: number): ScaleEntry[] {
+function applyRounding(px: number, rounding: RoundingGrid): number {
+  if (rounding === "none") return px;
+  const grid = rounding === "4px" ? 4 : 8;
+  return Math.round(px / grid) * grid;
+}
+
+export function calculateTypeScale(base: number, ratio: number, rounding: RoundingGrid = "none"): ScaleEntry[] {
   const tokens: ScaleToken[] = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "small", "xs"];
   return tokens.map((token) => {
     const exp = TOKEN_EXPONENTS[token];
-    const px = base * Math.pow(ratio, exp);
+    const rawPx = base * Math.pow(ratio, exp);
+    const px = applyRounding(rawPx, rounding);
     return {
       token,
       px,
