@@ -22,6 +22,19 @@ export default function ControlsPanel() {
   const [showLibrary, setShowLibrary] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeSource, setActiveSource] = useState<string | null>(null);
+
+  // Determine current active label
+  const activeLabel = (() => {
+    if (activeSource) return activeSource;
+    // Check if current config matches a preset
+    for (const [, preset] of Object.entries(PRESETS)) {
+      if (config.baseFontSize === preset.config.baseFontSize && config.scaleRatio === preset.config.scaleRatio) {
+        return preset.label;
+      }
+    }
+    return "Custom";
+  })();
 
   const shareUrl = (() => {
     const params = configToUrlParams(config);
@@ -41,11 +54,31 @@ export default function ControlsPanel() {
     }
   };
 
+  const handleApplyPreset = (key: string) => {
+    applyPreset(PRESETS[key].config);
+    setActiveSource(PRESETS[key].label);
+  };
+
+  const handleLoadSystem = (id: string) => {
+    const sys = savedSystems.find((s) => s.id === id);
+    loadSystem(id);
+    if (sys) setActiveSource(sys.name);
+  };
+
+  // Clear active source when user manually changes settings
+  const wrappedUpdateConfig = (partial: Partial<typeof config>) => {
+    setActiveSource(null);
+    updateConfig(partial);
+  };
+
   return (
     <div className="space-y-5 p-4 text-sm">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-foreground">TypeForge</span>
+        <div>
+          <span className="font-semibold text-foreground">TypeForge</span>
+          <span className="ml-1.5 text-[10px] text-muted-foreground">· {activeLabel}</span>
+        </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShareOpen(true)} title="Share">
             <Share2 className="h-3.5 w-3.5" />
@@ -108,12 +141,14 @@ export default function ControlsPanel() {
             {/* Presets */}
             <div className="space-y-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
-              <Select onValueChange={(v) => applyPreset(PRESETS[v].config)}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Choose a preset..." /></SelectTrigger>
-                <SelectContent>
+              <Select onValueChange={handleApplyPreset}>
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder={activeLabel} />
+                </SelectTrigger>
+                <SelectContent className="py-1">
                   {Object.entries(PRESETS).map(([key, preset]) => (
-                    <SelectItem key={key} value={key} className="py-2">
-                      <div className="flex flex-col">
+                    <SelectItem key={key} value={key} className="py-2.5 px-3 [&>span:first-child]:order-last [&>span:first-child]:ml-auto">
+                      <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-medium">{preset.label}</span>
                           <span className="text-[10px] text-muted-foreground">
@@ -140,7 +175,7 @@ export default function ControlsPanel() {
               </div>
               {savedSystems.map((sys) => (
                 <div key={sys.id} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
-                  <button onClick={() => loadSystem(sys.id)} className="text-left">
+                  <button onClick={() => handleLoadSystem(sys.id)} className="text-left">
                     <span className="block text-xs font-medium text-foreground hover:underline">{sys.name}</span>
                     <span className="block text-[10px] text-muted-foreground">
                       {(sys.config as any).baseFontSize}px · {(sys.config as any).scaleRatio}
@@ -163,17 +198,17 @@ export default function ControlsPanel() {
         <Label className="text-xs">Base Font Size</Label>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
-            onClick={() => updateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}>
+            onClick={() => wrappedUpdateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}>
             <Minus className="h-3 w-3" />
           </Button>
           <Input type="number" min={10} max={24} value={config.baseFontSize}
             onChange={(e) => {
               const v = Number(e.target.value);
-              if (v >= 10 && v <= 24) updateConfig({ baseFontSize: v });
+              if (v >= 10 && v <= 24) wrappedUpdateConfig({ baseFontSize: v });
             }}
             className="h-7 text-center text-xs" />
           <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
-            onClick={() => updateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}>
+            onClick={() => wrappedUpdateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}>
             <Plus className="h-3 w-3" />
           </Button>
           <span className="text-muted-foreground text-xs">px</span>
@@ -183,7 +218,7 @@ export default function ControlsPanel() {
       {/* Scale Ratio */}
       <div className="space-y-2">
         <Label className="text-xs">Scale Ratio</Label>
-        <Select value={String(config.scaleRatio)} onValueChange={(v) => updateConfig({ scaleRatio: Number(v) })}>
+        <Select value={String(config.scaleRatio)} onValueChange={(v) => wrappedUpdateConfig({ scaleRatio: Number(v) })}>
           <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {SCALE_RATIOS.map((r) => (

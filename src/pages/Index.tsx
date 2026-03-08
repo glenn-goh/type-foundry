@@ -27,7 +27,7 @@ function AppShell() {
     <div className="flex h-screen w-screen overflow-hidden flex-col bg-background lg:flex-row">
       <UrlParamLoader />
       {/* Left: Controls — fixed width on desktop, full-width collapsible on mobile */}
-      <aside className="w-full shrink-0 border-b border-border lg:w-64 lg:min-w-[16rem] lg:max-w-[16rem] lg:border-b-0 lg:border-r">
+      <aside className="w-full shrink-0 border-b border-border bg-muted/40 lg:w-64 lg:min-w-[16rem] lg:max-w-[16rem] lg:border-b-0 lg:border-r">
         <ScrollArea className="h-full max-h-[40vh] lg:max-h-screen">
           <ControlsPanel />
         </ScrollArea>
