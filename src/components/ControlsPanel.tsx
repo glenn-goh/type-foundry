@@ -79,15 +79,20 @@ export default function ControlsPanel() {
     setActiveSource(null);
     updateConfig(partial);
   };
+  const wrappedUpdateBody = (partial: Partial<typeof config.body>) => {
+    setActiveSource(null);
+    updateBody(partial);
+  };
+  const wrappedUpdateHeadings = (partial: Partial<typeof config.headings>) => {
+    setActiveSource(null);
+    updateHeadings(partial);
+  };
 
   return (
     <div className="space-y-5 p-4 text-sm">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <span className="font-semibold text-foreground">TypeForge</span>
-          <span className="ml-1.5 text-[10px] text-muted-foreground">· {activeLabel}</span>
-        </div>
+        <span className="font-semibold text-foreground">TypeForge</span>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShareOpen(true)} title="Share">
             <Share2 className="h-3.5 w-3.5" />
@@ -150,11 +155,19 @@ export default function ControlsPanel() {
             {/* Presets */}
             <div className="space-y-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
-              <Select value={activePresetKey ?? undefined} onValueChange={handleApplyPreset}>
+              <Select value={activePresetKey ?? "custom"} onValueChange={(v) => { if (v !== "custom") handleApplyPreset(v); }}>
                 <SelectTrigger className="h-8 text-xs">
-                  <SelectValue placeholder={activeLabel} />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="py-1">
+                  <SelectItem value="custom" className="py-2 pl-3 pr-8 [&>span:first-child]:left-auto [&>span:first-child]:right-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium">Custom</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {config.baseFontSize}px · {config.scaleRatio}
+                      </span>
+                    </div>
+                  </SelectItem>
                   {Object.entries(PRESETS).map(([key, preset]) => (
                     <SelectItem key={key} value={key} className="py-2.5 pl-3 pr-8 [&>span:first-child]:left-auto [&>span:first-child]:right-2">
                       <div className="flex flex-col gap-0.5">
@@ -231,7 +244,7 @@ export default function ControlsPanel() {
           <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {SCALE_RATIOS.map((r) => (
-              <SelectItem key={r.value} value={String(r.value)}>{r.label} — {r.value}</SelectItem>
+              <SelectItem key={r.value} value={String(r.value)}>{r.value} ({r.label})</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -290,7 +303,7 @@ export default function ControlsPanel() {
         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Body Settings</Label>
         <div className="space-y-1.5">
           <Label className="text-[11px]">Font Family</Label>
-          <Select value={config.body.fontFamily} onValueChange={(v) => updateBody({ fontFamily: v })}>
+          <Select value={config.body.fontFamily} onValueChange={(v) => wrappedUpdateBody({ fontFamily: v })}>
             <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>
               {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
@@ -300,18 +313,18 @@ export default function ControlsPanel() {
         <div className="space-y-1.5">
           <Label className="text-[11px]">Weight: {config.body.fontWeight}</Label>
           <Slider min={100} max={900} step={100} value={[config.body.fontWeight]}
-            onValueChange={([v]) => updateBody({ fontWeight: v })} />
+            onValueChange={([v]) => wrappedUpdateBody({ fontWeight: v })} />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
             <Label className="text-[11px]">Line Height</Label>
             <Input type="number" step={0.1} min={1} max={3} value={config.body.lineHeight}
-              onChange={(e) => updateBody({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
+              onChange={(e) => wrappedUpdateBody({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
           </div>
           <div className="space-y-1">
             <Label className="text-[11px]">Letter Spacing</Label>
             <Input type="number" step={0.01} value={config.body.letterSpacing}
-              onChange={(e) => updateBody({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
+              onChange={(e) => wrappedUpdateBody({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -319,7 +332,7 @@ export default function ControlsPanel() {
             <Label className="text-[11px]">Text Color</Label>
             <div className="flex items-center gap-1.5">
               <input type="color" value={config.body.textColor}
-                onChange={(e) => updateBody({ textColor: e.target.value })}
+                onChange={(e) => wrappedUpdateBody({ textColor: e.target.value })}
                 className="h-6 w-6 cursor-pointer rounded border border-input" />
               <span className="text-[10px] text-muted-foreground">{config.body.textColor}</span>
             </div>
@@ -328,7 +341,7 @@ export default function ControlsPanel() {
             <Label className="text-[11px]">Background</Label>
             <div className="flex items-center gap-1.5">
               <input type="color" value={config.body.backgroundColor}
-                onChange={(e) => updateBody({ backgroundColor: e.target.value })}
+                onChange={(e) => wrappedUpdateBody({ backgroundColor: e.target.value })}
                 className="h-6 w-6 cursor-pointer rounded border border-input" />
               <span className="text-[10px] text-muted-foreground">{config.body.backgroundColor}</span>
             </div>
@@ -344,14 +357,14 @@ export default function ControlsPanel() {
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Heading Settings</Label>
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] text-muted-foreground">Inherit</span>
-            <Switch checked={config.headings.inherit} onCheckedChange={(v) => updateHeadings({ inherit: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
+            <Switch checked={config.headings.inherit} onCheckedChange={(v) => wrappedUpdateHeadings({ inherit: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
           </div>
         </div>
         {!config.headings.inherit && (
           <div className="space-y-2">
             <div className="space-y-1">
               <Label className="text-[11px]">Font Family</Label>
-              <Select value={config.headings.fontFamily} onValueChange={(v) => updateHeadings({ fontFamily: v })}>
+              <Select value={config.headings.fontFamily} onValueChange={(v) => wrappedUpdateHeadings({ fontFamily: v })}>
                 <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
@@ -361,25 +374,25 @@ export default function ControlsPanel() {
             <div className="space-y-1">
               <Label className="text-[11px]">Weight: {config.headings.fontWeight}</Label>
               <Slider min={100} max={900} step={100} value={[config.headings.fontWeight]}
-                onValueChange={([v]) => updateHeadings({ fontWeight: v })} />
+                onValueChange={([v]) => wrappedUpdateHeadings({ fontWeight: v })} />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
                 <Label className="text-[11px]">Line Height</Label>
                 <Input type="number" step={0.05} min={0.8} max={2} value={config.headings.lineHeight}
-                  onChange={(e) => updateHeadings({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
+                  onChange={(e) => wrappedUpdateHeadings({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
               </div>
               <div className="space-y-1">
                 <Label className="text-[11px]">Letter Spacing</Label>
                 <Input type="number" step={0.01} value={config.headings.letterSpacing}
-                  onChange={(e) => updateHeadings({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
+                  onChange={(e) => wrappedUpdateHeadings({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
               </div>
             </div>
             <div className="space-y-1">
               <Label className="text-[11px]">Color</Label>
               <div className="flex items-center gap-1.5">
                 <input type="color" value={config.headings.color}
-                  onChange={(e) => updateHeadings({ color: e.target.value })}
+                  onChange={(e) => wrappedUpdateHeadings({ color: e.target.value })}
                   className="h-6 w-6 cursor-pointer rounded border border-input" />
                 <span className="text-[10px] text-muted-foreground">{config.headings.color}</span>
               </div>
