@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function LandingPagePreview() {
+export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => void }) {
   const { config, updateConfig } = useAppConfig();
   const scale = useMemo(
     () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
