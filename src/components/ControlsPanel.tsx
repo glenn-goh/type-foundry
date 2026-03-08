@@ -392,7 +392,7 @@ export default function ControlsPanel() {
               <Label className="text-[11px]">Color</Label>
               <div className="flex items-center gap-1.5">
                 <input type="color" value={config.headings.color}
-                  onChange={(e) => updateHeadings({ color: e.target.value })}
+                  onChange={(e) => wrappedUpdateHeadings({ color: e.target.value })}
                   className="h-6 w-6 cursor-pointer rounded border border-input" />
                 <span className="text-[10px] text-muted-foreground">{config.headings.color}</span>
               </div>
