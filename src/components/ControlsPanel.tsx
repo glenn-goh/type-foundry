@@ -45,7 +45,19 @@ export default function ControlsPanel() {
           </Button>
           <Button
             variant="ghost" size="icon" className="h-7 w-7"
-            onClick={() => updateConfig({ theme: config.theme === "light" ? "dark" : "light" })}
+            onClick={() => {
+              const isDark = config.theme === "light";
+              updateConfig({
+                theme: isDark ? "dark" : "light",
+              });
+              updateBody({
+                textColor: isDark ? "#E5E7EB" : "#222222",
+                backgroundColor: isDark ? "#111318" : "#FFFFFF",
+              });
+              updateHeadings({
+                color: isDark ? "#F3F4F6" : "#222222",
+              });
+            }}
           >
             {config.theme === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
           </Button>
@@ -151,7 +163,7 @@ export default function ControlsPanel() {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Compare Mode</Label>
-          <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })} />
+          <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
         </div>
         {config.compare.enabled && (
           <Select value={String(config.compare.scaleRatio)} onValueChange={(v) => updateCompare({ scaleRatio: Number(v) })}>
@@ -241,7 +253,7 @@ export default function ControlsPanel() {
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Heading Settings</Label>
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] text-muted-foreground">Inherit</span>
-            <Switch checked={config.headings.inherit} onCheckedChange={(v) => updateHeadings({ inherit: v })} />
+            <Switch checked={config.headings.inherit} onCheckedChange={(v) => updateHeadings({ inherit: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
           </div>
         </div>
         {!config.headings.inherit && (
@@ -291,7 +303,7 @@ export default function ControlsPanel() {
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Responsive</Label>
-          <Switch checked={config.responsive.enabled} onCheckedChange={(v) => updateResponsive({ enabled: v })} />
+          <Switch checked={config.responsive.enabled} onCheckedChange={(v) => updateResponsive({ enabled: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
         </div>
         {config.responsive.enabled && (
           <div className="space-y-3">

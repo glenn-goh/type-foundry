@@ -8,14 +8,18 @@ import ComparePanel from "./ComparePanel";
 import ResponsiveBreakpointPreview from "./ResponsiveBreakpointPreview";
 import AccessibilityPanel from "./AccessibilityPanel";
 
-const PREVIEW_TEXT = "How vexingly quick daft zebras jump";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
-function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading }: {
+const DEFAULT_PREVIEW_TEXT = "How vexingly quick daft zebras jump";
+
+function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading, previewText }: {
   entry: ScaleEntry;
   unit: "rem" | "px" | "pt";
   bodyStyle: React.CSSProperties;
   headingStyle: React.CSSProperties;
   isHeading: boolean;
+  previewText: string;
 }) {
   const style = isHeading ? headingStyle : bodyStyle;
   return (
@@ -27,8 +31,8 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading }: {
         <span className="font-mono text-[10px] text-muted-foreground">{formatValue(entry, unit)}</span>
       </div>
       <div className="min-w-0 flex-1 overflow-hidden">
-        <p className="truncate" style={{ fontSize: `${entry.px}px`, ...style }}>
-          {PREVIEW_TEXT}
+        <p className="truncate text-foreground" style={{ fontSize: `${entry.px}px`, ...style }}>
+          {previewText}
         </p>
       </div>
     </div>
@@ -37,6 +41,7 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading }: {
 
 export default function TypeScalePreview() {
   const { config } = useAppConfig();
+  const [previewText, setPreviewText] = useState(DEFAULT_PREVIEW_TEXT);
   const scale = useMemo(
     () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
     [config.baseFontSize, config.scaleRatio, config.rounding]
@@ -47,7 +52,6 @@ export default function TypeScalePreview() {
     fontWeight: config.body.fontWeight,
     lineHeight: config.body.lineHeight,
     letterSpacing: `${config.body.letterSpacing}em`,
-    color: config.body.textColor,
   };
 
   const headingStyle: React.CSSProperties = config.headings.inherit
@@ -57,7 +61,6 @@ export default function TypeScalePreview() {
         fontWeight: config.headings.fontWeight,
         lineHeight: config.headings.lineHeight,
         letterSpacing: `${config.headings.letterSpacing}em`,
-        color: config.headings.color,
       };
 
   const headingTokens = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
@@ -70,6 +73,14 @@ export default function TypeScalePreview() {
           {config.baseFontSize}px · {config.scaleRatio}
         </span>
       </div>
+      <div className="px-4 py-2 border-b border-border">
+        <Input
+          value={previewText}
+          onChange={(e) => setPreviewText(e.target.value)}
+          placeholder="Preview text..."
+          className="h-7 text-xs"
+        />
+      </div>
       <div className="flex-1 overflow-auto">
         {scale.map((entry) => (
           <TypeRow
@@ -79,6 +90,7 @@ export default function TypeScalePreview() {
             bodyStyle={bodyStyle}
             headingStyle={headingStyle}
             isHeading={headingTokens.has(entry.token)}
+            previewText={previewText || DEFAULT_PREVIEW_TEXT}
           />
         ))}
         <ScaleGraph />
