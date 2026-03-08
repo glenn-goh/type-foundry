@@ -184,7 +184,7 @@ export default function LandingPagePreview() {
 
         {/* E-Commerce */}
         {config.previewMode === "ecommerce" && (
-          <div className="p-6 space-y-6">
+          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
             <div className="flex items-center justify-between">
               <h2 style={hStyle("h3")}>Featured Products</h2>
               <span style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50 cursor-pointer hover:opacity-80">View all →</span>
