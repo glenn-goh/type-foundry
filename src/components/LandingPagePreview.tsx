@@ -187,7 +187,7 @@ export default function LandingPagePreview() {
 
         {/* Blog Feed */}
         {config.previewMode === "blog" && (
-          <div className="mx-auto max-w-2xl px-6 py-10 space-y-8">
+          <div className="mx-auto max-w-2xl px-10 py-10 space-y-8">
             <h1 style={hStyle("h2")}>Latest Posts</h1>
             {[
               { title: "Understanding Modular Type Scales", excerpt: "Why mathematical ratios create better visual hierarchy in your designs.", date: "Mar 7, 2026", tag: "Design" },
