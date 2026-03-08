@@ -1,4 +1,4 @@
-import type { ScaleEntry, ScaleToken, Unit } from "./types";
+import type { RoundingGrid, ScaleEntry, ScaleToken, Unit } from "./types";
 
 const TOKEN_EXPONENTS: Record<ScaleToken, number> = {
   h1: 6,
