@@ -38,7 +38,7 @@ export default function ControlsPanel() {
     <div className="space-y-5 p-4 text-sm">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-foreground">Type Scale</span>
+        <span className="font-semibold text-foreground">TypeForge</span>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleShare} title="Copy shareable URL">
             <Share2 className="h-3.5 w-3.5" />
@@ -175,21 +175,6 @@ export default function ControlsPanel() {
             </SelectContent>
           </Select>
         )}
-      </div>
-
-      <Separator />
-
-      {/* Preview Mode */}
-      <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preview Mode</Label>
-        <div className="flex gap-1">
-          {([["marketing", "Marketing"], ["article", "Article"], ["product", "Product UI"]] as const).map(([v, l]) => (
-            <Button key={v} variant={config.previewMode === v ? "default" : "outline"} size="sm"
-              className="h-6 flex-1 text-[10px]" onClick={() => updateConfig({ previewMode: v as "marketing" | "article" | "product" })}>
-              {l}
-            </Button>
-          ))}
-        </div>
       </div>
 
       <Separator />

@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
 import { calculateTypeScale, getFontFamilyStack } from "@/lib/scale-utils";
+import { Button } from "@/components/ui/button";
 
 export default function LandingPagePreview() {
-  const { config } = useAppConfig();
+  const { config, updateConfig } = useAppConfig();
   const scale = useMemo(
     () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
     [config.baseFontSize, config.scaleRatio, config.rounding]
@@ -37,7 +38,21 @@ export default function LandingPagePreview() {
   };
 
   return (
-    <div className="flex h-full flex-col overflow-auto" style={baseStyle}>
+    <div className="flex h-full flex-col overflow-hidden">
+      {/* Preview Mode Switcher */}
+      <div className="flex items-center justify-between border-b border-border px-4 py-2">
+        <span className="text-xs font-semibold text-foreground">Live Preview</span>
+        <div className="flex gap-1">
+          {([["marketing", "Marketing"], ["article", "Article"], ["product", "Product UI"]] as const).map(([v, l]) => (
+            <Button key={v} variant={config.previewMode === v ? "default" : "outline"} size="sm"
+              className="h-6 text-[10px] px-2.5" onClick={() => updateConfig({ previewMode: v as "marketing" | "article" | "product" })}>
+              {l}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-auto" style={baseStyle}>
       {/* Navbar */}
       <nav className="flex items-center justify-between border-b px-6 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
         <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
@@ -152,6 +167,7 @@ export default function LandingPagePreview() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
