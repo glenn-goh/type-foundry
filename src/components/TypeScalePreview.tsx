@@ -24,7 +24,7 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading, previewText 
 }) {
   const style = isHeading ? headingStyle : bodyStyle;
   return (
-    <div className="group flex items-baseline gap-3 border-b border-border px-4 py-2.5 transition-colors hover:bg-accent/50">
+    <div className="group flex items-baseline gap-2 border-b border-border px-4 py-2.5 transition-colors hover:bg-accent/50">
       <div className="w-10 shrink-0">
         <span className="text-[10px] font-semibold uppercase text-muted-foreground">{entry.token}</span>
       </div>

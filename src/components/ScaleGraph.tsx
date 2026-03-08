@@ -57,6 +57,7 @@ export default function ScaleGraph() {
                 color: "hsl(var(--popover-foreground))",
                 padding: "6px 10px",
               }}
+              cursor={{ fill: "hsl(var(--muted-foreground) / 0.1)" }}
               labelStyle={{ color: "hsl(var(--popover-foreground))" }}
               itemStyle={{ color: "hsl(var(--popover-foreground))" }}
               formatter={(value: number, name: string) => [
