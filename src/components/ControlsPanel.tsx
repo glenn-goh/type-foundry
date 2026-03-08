@@ -92,10 +92,7 @@ export default function ControlsPanel() {
     <div className="space-y-5 p-4 text-sm">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <span className="font-semibold text-foreground">TypeForge</span>
-          <span className="ml-1.5 text-[10px] text-muted-foreground">· {activeLabel}</span>
-        </div>
+        <span className="font-semibold text-foreground">TypeForge</span>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShareOpen(true)} title="Share">
             <Share2 className="h-3.5 w-3.5" />
