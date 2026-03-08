@@ -1,5 +1,5 @@
 import { useAppConfig } from "@/context/AppConfigContext";
-import { SCALE_RATIOS, FONT_FAMILIES } from "@/lib/types";
+import { SCALE_RATIOS, FONT_FAMILIES, type RoundingGrid } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
