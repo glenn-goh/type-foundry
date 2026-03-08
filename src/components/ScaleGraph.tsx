@@ -55,7 +55,10 @@ export default function ScaleGraph() {
                 borderRadius: "6px",
                 fontSize: 12,
                 color: "hsl(var(--popover-foreground))",
+                padding: "6px 10px",
               }}
+              labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+              itemStyle={{ color: "hsl(var(--popover-foreground))" }}
               formatter={(value: number, name: string) => [
                 `${value}px`,
                 name === "size" ? "Current" : "Compare",
