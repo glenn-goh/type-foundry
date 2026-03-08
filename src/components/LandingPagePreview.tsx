@@ -299,6 +299,7 @@ export default function LandingPagePreview() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
