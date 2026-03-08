@@ -25,6 +25,7 @@ export default function ControlsPanel() {
   const [resetOpen, setResetOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeSource, setActiveSource] = useState<string | null>(null);
+  const [isCustomRatio, setIsCustomRatio] = useState(false);
 
   // Determine current active label
   const activeLabel = (() => {
@@ -146,7 +147,7 @@ export default function ControlsPanel() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => { resetConfig(); setActiveSource(null); }}>Reset</AlertDialogAction>
+            <AlertDialogAction onClick={() => { const currentTheme = config.theme; resetConfig(); setActiveSource(null); setIsCustomRatio(false); /* Restore current theme mode */ if (currentTheme === "dark") { updateConfig({ theme: "dark" }); updateBody({ textColor: "#E5E7EB", backgroundColor: "#111318" }); updateHeadings({ color: "#F3F4F6" }); } }}>Reset</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -274,15 +275,19 @@ export default function ControlsPanel() {
       <div className="space-y-2">
         <Label className="text-xs">Scale Ratio</Label>
         <Select
-          value={SCALE_RATIOS.some((r) => r.value === config.scaleRatio) ? String(config.scaleRatio) : "custom"}
+          value={!isCustomRatio && SCALE_RATIOS.some((r) => r.value === config.scaleRatio) ? String(config.scaleRatio) : "custom"}
           onValueChange={(v) => {
-            if (v === "custom") wrappedUpdateConfig({ scaleRatio: 1.3 });
-            else wrappedUpdateConfig({ scaleRatio: Number(v) });
+            if (v === "custom") {
+              setIsCustomRatio(true);
+            } else {
+              setIsCustomRatio(false);
+              wrappedUpdateConfig({ scaleRatio: Number(v) });
+            }
           }}
         >
           <SelectTrigger className="h-7 text-xs">
             <SelectValue>
-              {SCALE_RATIOS.some((r) => r.value === config.scaleRatio)
+              {!isCustomRatio && SCALE_RATIOS.some((r) => r.value === config.scaleRatio)
                 ? `${config.scaleRatio} (${SCALE_RATIOS.find((r) => r.value === config.scaleRatio)?.label})`
                 : `${config.scaleRatio} (Custom)`}
             </SelectValue>
@@ -294,7 +299,7 @@ export default function ControlsPanel() {
             <SelectItem value="custom">Custom...</SelectItem>
           </SelectContent>
         </Select>
-        {!SCALE_RATIOS.some((r) => r.value === config.scaleRatio) && (
+        {isCustomRatio && (
           <Input
             type="number" step={0.001} min={1} max={3} value={config.scaleRatio}
             onChange={(e) => {
