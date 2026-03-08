@@ -195,7 +195,7 @@ export default function ControlsPanel() {
         <Label className="text-xs">Base Font Size</Label>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
-            onClick={() => updateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}>
+            onClick={() => wrappedUpdateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}>
             <Minus className="h-3 w-3" />
           </Button>
           <Input type="number" min={10} max={24} value={config.baseFontSize}
