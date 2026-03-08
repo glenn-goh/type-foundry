@@ -102,8 +102,8 @@ export const PRESETS: Record<string, { label: string; description: string; confi
     label: "Editorial",
     description: "Dramatic scale for long-form reading",
     config: {
-      baseFontSize: 18,
-      scaleRatio: 1.333,
+      baseFontSize: 20,
+      scaleRatio: 1.414,
       body: { fontFamily: "Georgia", fontWeight: 400, lineHeight: 1.7, letterSpacing: 0, textColor: "#1a1a1a", backgroundColor: "#FAFAF8" },
       headings: { inherit: false, fontFamily: "Georgia", fontWeight: 700, lineHeight: 1.1, letterSpacing: -0.03, color: "#111111" },
     },
@@ -113,7 +113,7 @@ export const PRESETS: Record<string, { label: string; description: string; confi
     description: "Tight scale for app interfaces",
     config: {
       baseFontSize: 14,
-      scaleRatio: 1.125,
+      scaleRatio: 1.2,
       body: { fontFamily: "Inter", fontWeight: 400, lineHeight: 1.5, letterSpacing: 0, textColor: "#374151", backgroundColor: "#FFFFFF" },
       headings: { inherit: false, fontFamily: "Inter", fontWeight: 600, lineHeight: 1.2, letterSpacing: -0.01, color: "#111827" },
     },
@@ -122,8 +122,8 @@ export const PRESETS: Record<string, { label: string; description: string; confi
     label: "Marketing",
     description: "Bold scale for landing pages",
     config: {
-      baseFontSize: 16,
-      scaleRatio: 1.25,
+      baseFontSize: 18,
+      scaleRatio: 1.333,
       body: { fontFamily: "Inter", fontWeight: 400, lineHeight: 1.6, letterSpacing: 0, textColor: "#1f2937", backgroundColor: "#FFFFFF" },
       headings: { inherit: false, fontFamily: "Inter", fontWeight: 800, lineHeight: 1.1, letterSpacing: -0.025, color: "#0f172a" },
     },
@@ -133,7 +133,7 @@ export const PRESETS: Record<string, { label: string; description: string; confi
     description: "Compact scale for data-heavy UIs",
     config: {
       baseFontSize: 13,
-      scaleRatio: 1.067,
+      scaleRatio: 1.125,
       body: { fontFamily: "Inter", fontWeight: 400, lineHeight: 1.4, letterSpacing: 0.01, textColor: "#4b5563", backgroundColor: "#FFFFFF" },
       headings: { inherit: false, fontFamily: "Inter", fontWeight: 600, lineHeight: 1.2, letterSpacing: 0, color: "#1f2937" },
     },
@@ -142,8 +142,8 @@ export const PRESETS: Record<string, { label: string; description: string; confi
     label: "Readable Blog",
     description: "Optimized for comfortable reading",
     config: {
-      baseFontSize: 18,
-      scaleRatio: 1.2,
+      baseFontSize: 19,
+      scaleRatio: 1.25,
       body: { fontFamily: "Open Sans", fontWeight: 400, lineHeight: 1.75, letterSpacing: 0, textColor: "#333333", backgroundColor: "#FEFEFE" },
       headings: { inherit: false, fontFamily: "Inter", fontWeight: 700, lineHeight: 1.15, letterSpacing: -0.02, color: "#1a1a1a" },
     },
