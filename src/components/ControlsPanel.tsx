@@ -215,7 +215,7 @@ export default function ControlsPanel() {
       {/* Scale Ratio */}
       <div className="space-y-2">
         <Label className="text-xs">Scale Ratio</Label>
-        <Select value={String(config.scaleRatio)} onValueChange={(v) => updateConfig({ scaleRatio: Number(v) })}>
+        <Select value={String(config.scaleRatio)} onValueChange={(v) => wrappedUpdateConfig({ scaleRatio: Number(v) })}>
           <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {SCALE_RATIOS.map((r) => (
