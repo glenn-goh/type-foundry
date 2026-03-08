@@ -241,7 +241,7 @@ export default function ControlsPanel() {
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Heading Settings</Label>
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] text-muted-foreground">Inherit</span>
-            <Switch checked={config.headings.inherit} onCheckedChange={(v) => updateHeadings({ inherit: v })} />
+            <Switch checked={config.headings.inherit} onCheckedChange={(v) => updateHeadings({ inherit: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
           </div>
         </div>
         {!config.headings.inherit && (
