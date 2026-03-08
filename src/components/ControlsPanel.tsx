@@ -276,7 +276,7 @@ export default function ControlsPanel() {
         <Select
           value={SCALE_RATIOS.some((r) => r.value === config.scaleRatio) ? String(config.scaleRatio) : "custom"}
           onValueChange={(v) => {
-            if (v === "custom") wrappedUpdateConfig({ scaleRatio: 1.333 });
+            if (v === "custom") wrappedUpdateConfig({ scaleRatio: 1.3 });
             else wrappedUpdateConfig({ scaleRatio: Number(v) });
           }}
         >
