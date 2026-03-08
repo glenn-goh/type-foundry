@@ -385,7 +385,7 @@ export default function ControlsPanel() {
               <div className="space-y-1">
                 <Label className="text-[11px]">Letter Spacing</Label>
                 <Input type="number" step={0.01} value={config.headings.letterSpacing}
-                  onChange={(e) => updateHeadings({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
+                  onChange={(e) => wrappedUpdateHeadings({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
               </div>
             </div>
             <div className="space-y-1">
