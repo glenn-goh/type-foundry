@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
-import { SCALE_RATIOS, FONT_FAMILIES, PRESETS, type RoundingGrid } from "@/lib/types";
+import { SCALE_RATIOS, PRESETS, type RoundingGrid } from "@/lib/types";
 import { configToUrlParams } from "@/lib/scale-utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
