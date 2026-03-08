@@ -56,27 +56,27 @@ export default function LandingPagePreview() {
       {config.previewMode === "marketing" && (
         <div className="flex flex-1 items-center px-6 py-12 md:px-12">
           <div className="max-w-xl space-y-6">
-            <h1 style={hStyle("h1")}>Your digital transformation begins here</h1>
+            <h1 style={hStyle("h1")}>Ship faster with tools that scale</h1>
             <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
-              Unlock the full potential of your business. Start your journey today and experience the future of business software.
+              From prototype to production in minutes. Archway gives your team the infrastructure to build, deploy, and iterate without limits.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button className="rounded-lg px-5 py-2.5 font-medium transition-opacity hover:opacity-90"
                 style={{ fontSize: `${sizeMap.small}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
-                Explore features
+                Start building
               </button>
               <button className="rounded-lg border px-5 py-2.5 font-medium transition-opacity hover:opacity-80"
                 style={{ fontSize: `${sizeMap.small}px`, borderColor: `${config.body.textColor}30` }}>
-                Get started
+                View docs
               </button>
             </div>
-            <p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-50">No credit card required</p>
+            <p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-50">Free tier available · No setup needed</p>
           </div>
           <div className="ml-auto hidden lg:block">
             <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
-              <circle cx="100" cy="100" r="80" stroke={`${config.body.textColor}15`} strokeWidth="1" />
-              <circle cx="100" cy="100" r="60" stroke={`${config.body.textColor}10`} strokeWidth="1" />
-              <circle cx="100" cy="100" r="40" stroke={`${config.body.textColor}08`} strokeWidth="1" />
+              <rect x="30" y="30" width="140" height="140" rx="16" stroke={`${config.body.textColor}15`} strokeWidth="1" />
+              <rect x="55" y="55" width="90" height="90" rx="10" stroke={`${config.body.textColor}10`} strokeWidth="1" />
+              <rect x="80" y="80" width="40" height="40" rx="6" stroke={`${config.body.textColor}08`} strokeWidth="1" />
             </svg>
           </div>
         </div>

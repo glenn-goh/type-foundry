@@ -41,6 +41,7 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading, previewText 
 
 export default function TypeScalePreview() {
   const { config } = useAppConfig();
+  const [previewText, setPreviewText] = useState(DEFAULT_PREVIEW_TEXT);
   const scale = useMemo(
     () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
     [config.baseFontSize, config.scaleRatio, config.rounding]
@@ -51,7 +52,6 @@ export default function TypeScalePreview() {
     fontWeight: config.body.fontWeight,
     lineHeight: config.body.lineHeight,
     letterSpacing: `${config.body.letterSpacing}em`,
-    color: config.body.textColor,
   };
 
   const headingStyle: React.CSSProperties = config.headings.inherit
@@ -61,7 +61,6 @@ export default function TypeScalePreview() {
         fontWeight: config.headings.fontWeight,
         lineHeight: config.headings.lineHeight,
         letterSpacing: `${config.headings.letterSpacing}em`,
-        color: config.headings.color,
       };
 
   const headingTokens = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
@@ -74,6 +73,14 @@ export default function TypeScalePreview() {
           {config.baseFontSize}px · {config.scaleRatio}
         </span>
       </div>
+      <div className="px-4 py-2 border-b border-border">
+        <Input
+          value={previewText}
+          onChange={(e) => setPreviewText(e.target.value)}
+          placeholder="Preview text..."
+          className="h-7 text-xs"
+        />
+      </div>
       <div className="flex-1 overflow-auto">
         {scale.map((entry) => (
           <TypeRow
@@ -83,6 +90,7 @@ export default function TypeScalePreview() {
             bodyStyle={bodyStyle}
             headingStyle={headingStyle}
             isHeading={headingTokens.has(entry.token)}
+            previewText={previewText || DEFAULT_PREVIEW_TEXT}
           />
         ))}
         <ScaleGraph />

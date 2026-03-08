@@ -54,7 +54,11 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    document.documentElement.classList.toggle("dark", config.theme === "dark");
+    if (config.theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, [config]);
 
   useEffect(() => {
