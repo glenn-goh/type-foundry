@@ -108,18 +108,24 @@ export default function ControlsPanel() {
             {/* Presets */}
             <div className="space-y-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
-              <div className="grid grid-cols-2 gap-1.5">
-                {Object.entries(PRESETS).map(([key, preset]) => (
-                  <button
-                    key={key}
-                    onClick={() => applyPreset(preset.config)}
-                    className="rounded-md border border-border px-2 py-1.5 text-left transition-colors hover:bg-accent"
-                  >
-                    <span className="block text-xs font-medium text-foreground">{preset.label}</span>
-                    <span className="block text-[10px] text-muted-foreground">{preset.description}</span>
-                  </button>
-                ))}
-              </div>
+              <Select onValueChange={(v) => applyPreset(PRESETS[v].config)}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Choose a preset..." /></SelectTrigger>
+                <SelectContent>
+                  {Object.entries(PRESETS).map(([key, preset]) => (
+                    <SelectItem key={key} value={key} className="py-2">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium">{preset.label}</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            {preset.config.baseFontSize}px · {preset.config.scaleRatio}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground">{preset.description}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Saved Systems */}
@@ -134,8 +140,11 @@ export default function ControlsPanel() {
               </div>
               {savedSystems.map((sys) => (
                 <div key={sys.id} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
-                  <button onClick={() => loadSystem(sys.id)} className="text-xs font-medium text-foreground hover:underline">
-                    {sys.name}
+                  <button onClick={() => loadSystem(sys.id)} className="text-left">
+                    <span className="block text-xs font-medium text-foreground hover:underline">{sys.name}</span>
+                    <span className="block text-[10px] text-muted-foreground">
+                      {(sys.config as any).baseFontSize}px · {(sys.config as any).scaleRatio}
+                    </span>
                   </button>
                   <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => deleteSystem(sys.id)}>
                     <Trash2 className="h-3 w-3 text-muted-foreground" />
