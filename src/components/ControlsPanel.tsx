@@ -273,14 +273,36 @@ export default function ControlsPanel() {
       {/* Scale Ratio */}
       <div className="space-y-2">
         <Label className="text-xs">Scale Ratio</Label>
-        <Select value={String(config.scaleRatio)} onValueChange={(v) => wrappedUpdateConfig({ scaleRatio: Number(v) })}>
-          <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+        <Select
+          value={SCALE_RATIOS.some((r) => r.value === config.scaleRatio) ? String(config.scaleRatio) : "custom"}
+          onValueChange={(v) => {
+            if (v !== "custom") wrappedUpdateConfig({ scaleRatio: Number(v) });
+          }}
+        >
+          <SelectTrigger className="h-7 text-xs">
+            <SelectValue>
+              {SCALE_RATIOS.some((r) => r.value === config.scaleRatio)
+                ? `${config.scaleRatio} (${SCALE_RATIOS.find((r) => r.value === config.scaleRatio)?.label})`
+                : `${config.scaleRatio} (Custom)`}
+            </SelectValue>
+          </SelectTrigger>
           <SelectContent>
             {SCALE_RATIOS.map((r) => (
               <SelectItem key={r.value} value={String(r.value)}>{r.value} ({r.label})</SelectItem>
             ))}
+            <SelectItem value="custom">Custom...</SelectItem>
           </SelectContent>
         </Select>
+        {!SCALE_RATIOS.some((r) => r.value === config.scaleRatio) && (
+          <Input
+            type="number" step={0.001} min={1} max={3} value={config.scaleRatio}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              if (v >= 1 && v <= 3) wrappedUpdateConfig({ scaleRatio: Math.round(v * 1000) / 1000 });
+            }}
+            className="h-7 text-xs" placeholder="e.g. 1.333"
+          />
+        )}
       </div>
 
       {/* Unit + Rounding */}
