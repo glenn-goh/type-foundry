@@ -313,7 +313,7 @@ export default function ControlsPanel() {
         <div className="space-y-1.5">
           <Label className="text-[11px]">Weight: {config.body.fontWeight}</Label>
           <Slider min={100} max={900} step={100} value={[config.body.fontWeight]}
-            onValueChange={([v]) => updateBody({ fontWeight: v })} />
+            onValueChange={([v]) => wrappedUpdateBody({ fontWeight: v })} />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
