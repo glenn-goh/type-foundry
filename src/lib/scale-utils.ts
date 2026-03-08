@@ -1,4 +1,4 @@
-import type { RoundingGrid, ScaleEntry, ScaleToken, Unit } from "./types";
+import type { BreakpointConfig, RoundingGrid, ScaleEntry, ScaleToken, Unit } from "./types";
 
 const TOKEN_EXPONENTS: Record<ScaleToken, number> = {
   h1: 6,
@@ -15,7 +15,7 @@ const TOKEN_EXPONENTS: Record<ScaleToken, number> = {
 function applyRounding(px: number, rounding: RoundingGrid): number {
   if (rounding === "none") return px;
   const grid = rounding === "4px" ? 4 : 8;
-  return Math.round(px / grid) * grid;
+  return Math.max(grid, Math.round(px / grid) * grid);
 }
 
 export function calculateTypeScale(base: number, ratio: number, rounding: RoundingGrid = "none"): ScaleEntry[] {
@@ -63,6 +63,31 @@ export function generateCssVariables(
     );
     css += `\n\n@media (min-width: ${responsive.minWidth}px) {\n  :root {\n${rLines.join("\n")}\n  }\n}`;
   }
+  return css;
+}
+
+export function generateResponsiveCss(
+  breakpoints: BreakpointConfig[],
+  unit: Unit,
+  rounding: RoundingGrid
+): string {
+  const sorted = [...breakpoints].sort((a, b) => a.minWidth - b.minWidth);
+  let css = "";
+
+  sorted.forEach((bp, i) => {
+    const scale = calculateTypeScale(bp.baseFontSize, bp.scaleRatio, rounding);
+    const lines = scale.map(
+      (e) => `  --font-size-${e.token === "p" ? "body" : e.token}: ${formatValue(e, unit)};`
+    );
+
+    if (i === 0) {
+      css += `/* ${bp.label} */\n:root {\n${lines.join("\n")}\n}`;
+    } else {
+      const indented = lines.map((l) => `  ${l}`);
+      css += `\n\n/* ${bp.label} */\n@media (min-width: ${bp.minWidth}px) {\n  :root {\n${indented.join("\n")}\n  }\n}`;
+    }
+  });
+
   return css;
 }
 
@@ -127,3 +152,56 @@ export function getFontFamilyStack(family: string): string {
   };
   return stacks[family] || "system-ui, sans-serif";
 }
+
+export function getScaleDensity(ratio: number): { label: string; description: string } {
+  if (ratio <= 1.1) return { label: "Tight", description: "Compact spacing, ideal for data-dense interfaces" };
+  if (ratio <= 1.2) return { label: "Balanced", description: "Versatile spacing for general use" };
+  if (ratio <= 1.35) return { label: "Expressive", description: "Clear hierarchy for marketing & editorial" };
+  return { label: "Dramatic", description: "Strong visual contrast between sizes" };
+}
+
+export function getAccessibilityWarnings(config: { baseFontSize: number; body: { lineHeight: number } }): string[] {
+  const warnings: string[] = [];
+  if (config.baseFontSize < 14) {
+    warnings.push("Body size below 14px may harm readability. Recommended minimum: 16px.");
+  } else if (config.baseFontSize < 16) {
+    warnings.push("Body size below 16px may reduce readability for some users.");
+  }
+  if (config.body.lineHeight < 1.4) {
+    warnings.push("Line height below 1.4 can reduce readability for body text.");
+  }
+  return warnings;
+}
+
+export function configToUrlParams(config: AppConfig): string {
+  const params = new URLSearchParams();
+  params.set("base", String(config.baseFontSize));
+  params.set("scale", String(config.scaleRatio));
+  params.set("unit", config.unit);
+  params.set("font", config.body.fontFamily);
+  if (config.rounding !== "none") params.set("round", config.rounding);
+  return params.toString();
+}
+
+export function urlParamsToConfig(search: string): Partial<AppConfig> | null {
+  const params = new URLSearchParams(search);
+  const partial: Partial<AppConfig> = {};
+  let hasAny = false;
+
+  const base = params.get("base");
+  if (base) { partial.baseFontSize = Number(base); hasAny = true; }
+
+  const scale = params.get("scale");
+  if (scale) { partial.scaleRatio = Number(scale); hasAny = true; }
+
+  const unit = params.get("unit");
+  if (unit && ["rem", "px", "pt"].includes(unit)) { partial.unit = unit as Unit; hasAny = true; }
+
+  const round = params.get("round");
+  if (round && ["4px", "8px"].includes(round)) { partial.rounding = round as RoundingGrid; hasAny = true; }
+
+  return hasAny ? partial : null;
+}
+
+// Re-export for URL param helpers
+import type { AppConfig } from "./types";
