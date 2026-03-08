@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
 import { calculateTypeScale, getFontFamilyStack } from "@/lib/scale-utils";
 import { PREVIEW_MODES, type PreviewMode } from "@/lib/types";
