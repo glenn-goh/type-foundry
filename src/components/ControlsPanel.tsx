@@ -319,7 +319,7 @@ export default function ControlsPanel() {
           <div className="space-y-1">
             <Label className="text-[11px]">Line Height</Label>
             <Input type="number" step={0.1} min={1} max={3} value={config.body.lineHeight}
-              onChange={(e) => updateBody({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
+              onChange={(e) => wrappedUpdateBody({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
           </div>
           <div className="space-y-1">
             <Label className="text-[11px]">Letter Spacing</Label>
