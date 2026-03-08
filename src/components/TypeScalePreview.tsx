@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
 import { calculateTypeScale, formatValue, getFontFamilyStack } from "@/lib/scale-utils";
 import type { ScaleEntry } from "@/lib/types";
@@ -7,9 +7,10 @@ import ScaleGraph from "./ScaleGraph";
 import ComparePanel from "./ComparePanel";
 import ResponsiveBreakpointPreview from "./ResponsiveBreakpointPreview";
 import AccessibilityPanel from "./AccessibilityPanel";
-
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { RotateCcw } from "lucide-react";
 
 const DEFAULT_PREVIEW_TEXT = "How vexingly quick daft zebras jump";
 
@@ -67,20 +68,36 @@ export default function TypeScalePreview() {
 
   return (
     <div className="flex h-full flex-col">
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
         <h2 className="text-xs font-semibold text-foreground">Type Scale</h2>
         <span className="text-[10px] text-muted-foreground">
           {config.baseFontSize}px · {config.scaleRatio}
         </span>
       </div>
-      <div className="px-4 py-2 border-b border-border">
+
+      {/* Preview text input with reset */}
+      <div className="flex items-center gap-1.5 px-4 py-2 border-b border-border">
         <Input
           value={previewText}
           onChange={(e) => setPreviewText(e.target.value)}
           placeholder="Preview text..."
           className="h-7 text-xs"
         />
+        {previewText !== DEFAULT_PREVIEW_TEXT && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 shrink-0"
+            onClick={() => setPreviewText(DEFAULT_PREVIEW_TEXT)}
+            title="Reset to default text"
+          >
+            <RotateCcw className="h-3 w-3" />
+          </Button>
+        )}
       </div>
+
+      {/* Type scale rows */}
       <div className="flex-1 overflow-auto">
         {scale.map((entry) => (
           <TypeRow
@@ -93,11 +110,33 @@ export default function TypeScalePreview() {
             previewText={previewText || DEFAULT_PREVIEW_TEXT}
           />
         ))}
-        <ScaleGraph />
-        {config.compare.enabled && <ComparePanel />}
-        {config.responsive.enabled && <ResponsiveBreakpointPreview />}
-        <AccessibilityPanel />
       </div>
+
+      {/* Bottom tabbed section */}
+      <div className="border-t border-border">
+        <Tabs defaultValue="graph" className="w-full">
+          <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent px-2 h-8">
+            <TabsTrigger value="graph" className="text-[10px] h-6 px-2.5 data-[state=active]:bg-accent rounded-sm">Graph</TabsTrigger>
+            <TabsTrigger value="compare" className="text-[10px] h-6 px-2.5 data-[state=active]:bg-accent rounded-sm">Compare & Density</TabsTrigger>
+            {config.responsive.enabled && (
+              <TabsTrigger value="responsive" className="text-[10px] h-6 px-2.5 data-[state=active]:bg-accent rounded-sm">Responsive</TabsTrigger>
+            )}
+          </TabsList>
+          <TabsContent value="graph" className="m-0 max-h-52 overflow-auto">
+            <ScaleGraph />
+          </TabsContent>
+          <TabsContent value="compare" className="m-0 max-h-52 overflow-auto">
+            {config.compare.enabled && <ComparePanel />}
+            <AccessibilityPanel />
+          </TabsContent>
+          {config.responsive.enabled && (
+            <TabsContent value="responsive" className="m-0 max-h-52 overflow-auto">
+              <ResponsiveBreakpointPreview />
+            </TabsContent>
+          )}
+        </Tabs>
+      </div>
+
       <ExportPanel scale={scale} />
     </div>
   );
