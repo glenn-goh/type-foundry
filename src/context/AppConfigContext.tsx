@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { AppConfig, SavedSystem } from "@/lib/types";
 import { DEFAULT_CONFIG } from "@/lib/types";
+import { loadGoogleFont } from "@/lib/scale-utils";
 
 interface AppConfigContextType {
   config: AppConfig;
