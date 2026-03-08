@@ -116,7 +116,7 @@ export default function LandingPagePreview() {
 
         {/* Article */}
         {config.previewMode === "article" && (
-          <article className="mx-auto max-w-2xl px-6 py-10 space-y-6">
+          <article className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <h1 style={hStyle("h1")}>The Evolution of Typography in Digital Design</h1>
             <p style={{ fontSize: `${sizeMap.h6}px` }} className="opacity-60">
               How modern type systems shape the way we read and interact with digital products.
