@@ -156,7 +156,7 @@ export default function ControlsPanel() {
             <div className="space-y-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
               <Select value={activePresetKey ?? "custom"} onValueChange={(v) => { if (v !== "custom") handleApplyPreset(v); }}>
-                <SelectTrigger className="h-8 text-xs">
+                <SelectTrigger className="h-8 text-xs [&_[data-desc]]:hidden">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="py-1">
@@ -177,7 +177,7 @@ export default function ControlsPanel() {
                             {preset.config.baseFontSize}px · {preset.config.scaleRatio}
                           </span>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">{preset.description}</span>
+                        <span data-desc className="text-[10px] text-muted-foreground">{preset.description}</span>
                       </div>
                     </SelectItem>
                   ))}
