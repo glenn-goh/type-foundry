@@ -172,7 +172,7 @@ export default function ControlsPanel() {
               </div>
               {savedSystems.map((sys) => (
                 <div key={sys.id} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
-                  <button onClick={() => loadSystem(sys.id)} className="text-left">
+                  <button onClick={() => handleLoadSystem(sys.id)} className="text-left">
                     <span className="block text-xs font-medium text-foreground hover:underline">{sys.name}</span>
                     <span className="block text-[10px] text-muted-foreground">
                       {(sys.config as any).baseFontSize}px · {(sys.config as any).scaleRatio}
