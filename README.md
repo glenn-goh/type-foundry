@@ -2,7 +2,7 @@
 
 A visual type scale design tool for crafting beautiful, consistent typography systems. 
 
-Try it live at **[type-foundry.vercel.app](https://type-foundry.vercel.app/)**.
+Try it live at **[type-foundry.vercel.app](https://type-foundry.vercel.app/)**
 
 ![Type Foundry — Light Mode](public/screenshots/light-mode.png)
 
