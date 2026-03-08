@@ -311,27 +311,27 @@ export default function ControlsPanel() {
               <div key={i} className="space-y-1.5 rounded-md border border-border p-2">
                 <Label className="text-[11px] font-medium">{bp.label}</Label>
                 <div className="grid grid-cols-3 gap-1.5">
-                  <div className="space-y-0.5">
+                  <div className="min-w-0 space-y-0.5">
                     <span className="text-[9px] text-muted-foreground">Min Width</span>
-                    <Input type="number" value={bp.minWidth} className="h-6 text-[10px]"
+                    <Input type="number" value={bp.minWidth} className="h-6 text-[10px] px-1.5"
                       onChange={(e) => {
                         const bps = [...config.responsive.breakpoints];
                         bps[i] = { ...bps[i], minWidth: Number(e.target.value) };
                         updateResponsive({ breakpoints: bps });
                       }} />
                   </div>
-                  <div className="space-y-0.5">
+                  <div className="min-w-0 space-y-0.5">
                     <span className="text-[9px] text-muted-foreground">Base Size</span>
-                    <Input type="number" value={bp.baseFontSize} min={10} max={24} className="h-6 text-[10px]"
+                    <Input type="number" value={bp.baseFontSize} min={10} max={24} className="h-6 text-[10px] px-1.5"
                       onChange={(e) => {
                         const bps = [...config.responsive.breakpoints];
                         bps[i] = { ...bps[i], baseFontSize: Number(e.target.value) };
                         updateResponsive({ breakpoints: bps });
                       }} />
                   </div>
-                  <div className="space-y-0.5">
+                  <div className="min-w-0 space-y-0.5">
                     <span className="text-[9px] text-muted-foreground">Ratio</span>
-                    <Input type="number" step={0.001} value={bp.scaleRatio} className="h-6 text-[10px]"
+                    <Input type="number" step={0.001} value={bp.scaleRatio} className="h-6 text-[10px] px-1.5"
                       onChange={(e) => {
                         const bps = [...config.responsive.breakpoints];
                         bps[i] = { ...bps[i], scaleRatio: Number(e.target.value) };
