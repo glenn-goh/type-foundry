@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
 import { calculateTypeScale, getFontFamilyStack } from "@/lib/scale-utils";
+import { Button } from "@/components/ui/button";
 
 export default function LandingPagePreview() {
-  const { config } = useAppConfig();
+  const { config, updateConfig } = useAppConfig();
   const scale = useMemo(
     () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
     [config.baseFontSize, config.scaleRatio, config.rounding]
