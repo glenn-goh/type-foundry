@@ -36,6 +36,15 @@ export default function ControlsPanel() {
     return "Custom";
   })();
 
+  const activePresetKey = (() => {
+    for (const [key, preset] of Object.entries(PRESETS)) {
+      if (config.baseFontSize === preset.config.baseFontSize && config.scaleRatio === preset.config.scaleRatio) {
+        return key;
+      }
+    }
+    return null;
+  })();
+
   const shareUrl = (() => {
     const params = configToUrlParams(config);
     return `${window.location.origin}${window.location.pathname}?${params}`;
@@ -141,13 +150,13 @@ export default function ControlsPanel() {
             {/* Presets */}
             <div className="space-y-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
-              <Select onValueChange={handleApplyPreset}>
+              <Select value={activePresetKey ?? undefined} onValueChange={handleApplyPreset}>
                 <SelectTrigger className="h-8 text-xs">
                   <SelectValue placeholder={activeLabel} />
                 </SelectTrigger>
                 <SelectContent className="py-1">
                   {Object.entries(PRESETS).map(([key, preset]) => (
-                    <SelectItem key={key} value={key} className="py-2.5 px-3 [&>span:first-child]:order-last [&>span:first-child]:ml-auto">
+                    <SelectItem key={key} value={key} className="py-2.5 pl-3 pr-8 [&>span:first-child]:left-auto [&>span:first-child]:right-2">
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-medium">{preset.label}</span>
