@@ -273,7 +273,7 @@ export default function LandingPagePreview() {
 
         {/* Portfolio */}
         {config.previewMode === "portfolio" && (
-          <div className="px-6 py-10 space-y-10 max-w-3xl mx-auto">
+          <div className="px-10 py-10 space-y-10 max-w-3xl mx-auto">
             <div className="space-y-3">
               <h1 style={hStyle("h1")}>Jane Cooper</h1>
               <p style={{ fontSize: `${sizeMap.h5}px` }} className="opacity-60">Product Designer & Creative Technologist</p>
