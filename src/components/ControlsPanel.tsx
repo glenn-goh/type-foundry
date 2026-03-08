@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
 
 export default function ControlsPanel() {
@@ -21,6 +22,7 @@ export default function ControlsPanel() {
   const [saveName, setSaveName] = useState("");
   const [showLibrary, setShowLibrary] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeSource, setActiveSource] = useState<string | null>(null);
 
@@ -64,8 +66,20 @@ export default function ControlsPanel() {
   };
 
   const handleApplyPreset = (key: string) => {
-    applyPreset(PRESETS[key].config);
-    setActiveSource(PRESETS[key].label);
+    const preset = PRESETS[key];
+    // Preserve current theme colors when in dark mode
+    const isDark = config.theme === "dark";
+    const filteredConfig = { ...preset.config };
+    if (isDark && filteredConfig.body) {
+      const { textColor, backgroundColor, ...restBody } = filteredConfig.body;
+      filteredConfig.body = restBody as any;
+    }
+    if (isDark && filteredConfig.headings) {
+      const { color, ...restHeadings } = filteredConfig.headings;
+      filteredConfig.headings = restHeadings as any;
+    }
+    applyPreset(filteredConfig);
+    setActiveSource(preset.label);
   };
 
   const handleLoadSystem = (id: string) => {
@@ -115,11 +129,24 @@ export default function ControlsPanel() {
           >
             {config.theme === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
           </Button>
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={resetConfig}>
-            <RotateCcw className="h-3.5 w-3.5" />
-          </Button>
         </div>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reset all settings?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will revert all typography settings back to their defaults. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => { resetConfig(); setActiveSource(null); }}>Reset</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Share Modal */}
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
@@ -143,13 +170,19 @@ export default function ControlsPanel() {
 
       {/* Library: Presets + Saved */}
       <div className="space-y-2">
-        <button
-          onClick={() => setShowLibrary(!showLibrary)}
-          className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {showLibrary ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-          Library
-        </button>
+        <div className="flex w-full items-center justify-between">
+          <button
+            onClick={() => setShowLibrary(!showLibrary)}
+            className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {showLibrary ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+            Library
+          </button>
+          <Button variant="ghost" size="sm" className="h-6 gap-1 px-2 text-[10px] text-muted-foreground hover:text-foreground" onClick={() => setResetOpen(true)}>
+            <RotateCcw className="h-3 w-3" />
+            Reset
+          </Button>
+        </div>
         {showLibrary && (
           <div className="space-y-3">
             {/* Presets */}
