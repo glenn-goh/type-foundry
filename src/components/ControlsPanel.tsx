@@ -365,12 +365,7 @@ export default function ControlsPanel() {
         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Body Settings</Label>
         <div className="space-y-1.5">
           <Label className="text-[11px]">Font Family</Label>
-          <Select value={config.body.fontFamily} onValueChange={(v) => wrappedUpdateBody({ fontFamily: v })}>
-            <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <FontSelector value={config.body.fontFamily} onValueChange={(v) => wrappedUpdateBody({ fontFamily: v })} />
         </div>
         <div className="space-y-1.5">
           <Label className="text-[11px]">Weight: {config.body.fontWeight}</Label>
