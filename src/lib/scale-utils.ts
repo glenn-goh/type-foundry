@@ -13,7 +13,7 @@ const TOKEN_EXPONENTS: Record<ScaleToken, number> = {
 };
 
 function applyRounding(px: number, rounding: RoundingGrid): number {
-  if (rounding === "none") return px;
+  if (rounding === "none") return Math.round(px * 100) / 100;
   const grid = rounding === "4px" ? 4 : 8;
   return Math.max(grid, Math.round(px / grid) * grid);
 }
