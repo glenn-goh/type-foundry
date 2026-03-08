@@ -28,7 +28,7 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading, previewText 
       <div className="w-10 shrink-0">
         <span className="text-[10px] font-semibold uppercase text-muted-foreground">{entry.token}</span>
       </div>
-      <div className="w-16 shrink-0 text-right">
+      <div className="w-12 shrink-0 text-right">
         <span className="font-mono text-[10px] text-muted-foreground">{formatValue(entry, unit)}</span>
       </div>
       <div className="min-w-0 flex-1 overflow-hidden">
