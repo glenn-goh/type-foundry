@@ -151,7 +151,7 @@ export default function ControlsPanel() {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Compare Mode</Label>
-          <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })} />
+          <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
         </div>
         {config.compare.enabled && (
           <Select value={String(config.compare.scaleRatio)} onValueChange={(v) => updateCompare({ scaleRatio: Number(v) })}>
