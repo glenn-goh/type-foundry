@@ -29,7 +29,10 @@ function AppShell() {
   return (
     <div className="flex h-screen w-screen overflow-hidden flex-col bg-background lg:flex-row">
       <UrlParamLoader />
-      <aside className="w-full shrink-0 border-b border-border bg-muted/40 lg:w-64 lg:min-w-[16rem] lg:max-w-[16rem] lg:border-b-0 lg:border-r">
+      <aside
+          className="w-full shrink-0 border-b lg:w-64 lg:min-w-[16rem] lg:max-w-[16rem] lg:border-b-0 lg:border-r"
+          style={{ backgroundColor: 'hsl(var(--sidebar-background))', borderColor: 'hsl(var(--sidebar-border))' }}
+        >
         <ScrollArea className="h-full max-h-[40vh] lg:max-h-screen">
           <ControlsPanel />
         </ScrollArea>
@@ -56,7 +59,8 @@ function AppShell() {
           </ResizablePanelGroup>
         </div>
         {previewCollapsed && (
-          <div className="flex h-full flex-col items-center border-l border-border bg-muted/30 px-1 pt-2 shrink-0">
+          <div className="flex h-full flex-col items-center border-l px-1 pt-2 shrink-0"
+            style={{ borderColor: 'hsl(var(--border))', backgroundColor: 'rgba(0,0,0,0.05)' }}>
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPreviewCollapsed(false)} title="Expand live preview">
               <PanelRightOpen className="h-4 w-4" />
             </Button>
