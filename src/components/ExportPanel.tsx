@@ -45,7 +45,7 @@ export default function ExportPanel({ scale }: { scale: ScaleEntry[] }) {
     const base = config.responsive.baseFontSize ?? config.baseFontSize;
     const ratio = config.responsive.inheritRatio ? config.scaleRatio : (config.responsive.scaleRatio ?? config.scaleRatio);
     return {
-      scale: calculateTypeScale(base, ratio),
+      scale: calculateTypeScale(base, ratio, config.rounding),
       minWidth: config.responsive.minWidth,
     };
   }, [config]);

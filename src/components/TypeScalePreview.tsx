@@ -40,8 +40,8 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading }: {
 export default function TypeScalePreview() {
   const { config } = useAppConfig();
   const scale = useMemo(
-    () => calculateTypeScale(config.baseFontSize, config.scaleRatio),
-    [config.baseFontSize, config.scaleRatio]
+    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
+    [config.baseFontSize, config.scaleRatio, config.rounding]
   );
 
   const bodyStyle: React.CSSProperties = {
