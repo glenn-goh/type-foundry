@@ -3,7 +3,7 @@ import { useAppConfig } from "@/context/AppConfigContext";
 import { calculateTypeScale, getFontFamilyStack } from "@/lib/scale-utils";
 import { PREVIEW_MODES, type PreviewMode } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PanelRightClose, PanelRightOpen } from "lucide-react";
+import { PanelRightClose } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => void }) {
