@@ -170,13 +170,19 @@ export default function ControlsPanel() {
 
       {/* Library: Presets + Saved */}
       <div className="space-y-2">
-        <button
-          onClick={() => setShowLibrary(!showLibrary)}
-          className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {showLibrary ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-          Library
-        </button>
+        <div className="flex w-full items-center justify-between">
+          <button
+            onClick={() => setShowLibrary(!showLibrary)}
+            className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {showLibrary ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+            Library
+          </button>
+          <Button variant="ghost" size="sm" className="h-6 gap-1 px-2 text-[10px] text-muted-foreground hover:text-foreground" onClick={() => setResetOpen(true)}>
+            <RotateCcw className="h-3 w-3" />
+            Reset
+          </Button>
+        </div>
         {showLibrary && (
           <div className="space-y-3">
             {/* Presets */}
