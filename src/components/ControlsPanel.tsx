@@ -259,12 +259,9 @@ export default function ControlsPanel() {
             onClick={() => wrappedUpdateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}>
             <Minus className="h-3 w-3" />
           </Button>
-          <Input type="number" min={10} max={24} value={config.baseFontSize}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              if (v >= 10 && v <= 24) wrappedUpdateConfig({ baseFontSize: v });
-            }}
-            className="h-7 text-center text-xs" />
+          <div className="flex h-7 flex-1 items-center justify-center rounded-md border border-input bg-background text-xs">
+            {config.baseFontSize}
+          </div>
           <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
             onClick={() => wrappedUpdateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}>
             <Plus className="h-3 w-3" />
