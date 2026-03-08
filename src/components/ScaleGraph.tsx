@@ -7,6 +7,8 @@ import type { ScaleEntry } from "@/lib/types";
 export default function ScaleGraph() {
   const { config } = useAppConfig();
 
+  const compareColor = config.theme === "dark" ? "#E2A336" : "#AD791F";
+
   const scale = useMemo(
     () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
     [config.baseFontSize, config.scaleRatio, config.rounding]
@@ -71,7 +73,7 @@ export default function ScaleGraph() {
               ))}
             </Bar>
             {compareScale && (
-              <Bar dataKey="compareSize" radius={[0, 3, 3, 0]} maxBarSize={12} fill="hsl(199 89% 48%)" opacity={0.6} />
+              <Bar dataKey="compareSize" radius={[0, 3, 3, 0]} maxBarSize={12} fill={compareColor} opacity={0.6} />
             )}
           </BarChart>
         </ResponsiveContainer>

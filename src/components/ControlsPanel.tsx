@@ -267,7 +267,7 @@ export default function ControlsPanel() {
               <div className="flex items-center justify-between">
                 <label style={{ fontSize: '11px', color: 'hsl(var(--sidebar-muted))' }}>Compare Mode</label>
                 <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })}
-                  className="data-[state=unchecked]:bg-white/10 data-[state=checked]:bg-amber-500" />
+                  className="data-[state=unchecked]:bg-black/20 dark:data-[state=unchecked]:bg-white/15 data-[state=checked]:bg-[#AD791F] dark:data-[state=checked]:bg-[#E2A336]" />
               </div>
               {config.compare.enabled && (
                 <div className="space-y-1.5">
@@ -392,7 +392,7 @@ export default function ControlsPanel() {
             <div className="flex items-center justify-between">
               <label style={{ fontSize: '11px', color: 'hsl(var(--sidebar-muted))' }}>Inherit body</label>
               <Switch checked={config.headings.inherit} onCheckedChange={(v) => wrappedUpdateHeadings({ inherit: v })}
-                className="data-[state=unchecked]:bg-white/10 data-[state=checked]:bg-amber-500" />
+                className="data-[state=unchecked]:bg-black/20 dark:data-[state=unchecked]:bg-white/15 data-[state=checked]:bg-[#AD791F] dark:data-[state=checked]:bg-[#E2A336]" />
             </div>
 
             {!config.headings.inherit && (
@@ -455,7 +455,7 @@ export default function ControlsPanel() {
               <div className="flex items-center justify-between">
                 <label style={{ fontSize: '11px', color: 'hsl(var(--sidebar-muted))' }}>Responsive</label>
                 <Switch checked={config.responsive.enabled} onCheckedChange={(v) => updateResponsive({ enabled: v })}
-                  className="data-[state=unchecked]:bg-white/10 data-[state=checked]:bg-amber-500" />
+                  className="data-[state=unchecked]:bg-black/20 dark:data-[state=unchecked]:bg-white/15 data-[state=checked]:bg-[#AD791F] dark:data-[state=checked]:bg-[#E2A336]" />
               </div>
               {config.responsive.enabled && (
                 <div className="space-y-2">
