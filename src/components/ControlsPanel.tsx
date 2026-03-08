@@ -145,10 +145,10 @@ export default function ControlsPanel() {
             variant="ghost" size="icon" className="h-7 w-7"
             style={{ color: 'hsl(var(--sidebar-muted))' }}
             onClick={() => {
-              const isDark = config.theme === "light";
-              updateConfig({ theme: isDark ? "dark" : "light" });
-              updateBody({ textColor: isDark ? "#E5E7EB" : "#222222", backgroundColor: isDark ? "#111318" : "#FFFFFF" });
-              updateHeadings({ color: isDark ? "#F3F4F6" : "#222222" });
+              const willBeDark = config.theme === "light";
+              updateConfig({ theme: willBeDark ? "dark" : "light" });
+              updateBody({ textColor: willBeDark ? "#E5E7EB" : "#222222", backgroundColor: willBeDark ? "#111318" : "#FFFFFF" });
+              updateHeadings({ color: willBeDark ? "#F3F4F6" : "#222222" });
             }}
           >
             {config.theme === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
