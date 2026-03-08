@@ -77,19 +77,19 @@ export default function LandingPagePreview() {
 
       <div className="flex-1 overflow-auto bg-muted/30 p-6" style={{ color: baseStyle.color, fontFamily: baseStyle.fontFamily, fontWeight: baseStyle.fontWeight, lineHeight: baseStyle.lineHeight, letterSpacing: baseStyle.letterSpacing }}>
         <div className="mx-auto max-w-4xl rounded-lg shadow-sm border border-border overflow-hidden" style={{ backgroundColor: config.body.backgroundColor }}>
-        {/* Navbar */}
-        <nav className="flex items-center justify-between border-b px-6 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
-          <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
-            Archway
-          </span>
-          <div className="hidden md:flex items-center gap-5">
-            {["Overview", "Solutions", "Resources", "Docs", "Blog"].map((item) => (
-              <span key={item} style={{ fontSize: `${sizeMap.small}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
-                {item}
-              </span>
-            ))}
-          </div>
-        </nav>
+          {/* Navbar */}
+          <nav className="flex items-center justify-between border-b px-10 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
+            <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
+              Archway
+            </span>
+            <div className="hidden md:flex items-center gap-5">
+              {["Overview", "Solutions", "Resources", "Docs", "Blog"].map((item) => (
+                <span key={item} style={{ fontSize: `${sizeMap.small}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </nav>
 
         {/* Marketing */}
         {config.previewMode === "marketing" && (

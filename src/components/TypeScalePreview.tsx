@@ -69,11 +69,8 @@ export default function TypeScalePreview() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+      <div className="flex items-center border-b border-border px-4 h-10">
         <h2 className="text-xs font-semibold text-foreground">Type Scale</h2>
-        <span className="text-[10px] text-muted-foreground">
-          {config.baseFontSize}px · {config.scaleRatio}
-        </span>
       </div>
 
       {/* Preview text input with reset */}
