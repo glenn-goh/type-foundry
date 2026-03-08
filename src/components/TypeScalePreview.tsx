@@ -3,6 +3,10 @@ import { useAppConfig } from "@/context/AppConfigContext";
 import { calculateTypeScale, formatValue, getFontFamilyStack } from "@/lib/scale-utils";
 import type { ScaleEntry } from "@/lib/types";
 import ExportPanel from "./ExportPanel";
+import ScaleGraph from "./ScaleGraph";
+import ComparePanel from "./ComparePanel";
+import ResponsiveBreakpointPreview from "./ResponsiveBreakpointPreview";
+import AccessibilityPanel from "./AccessibilityPanel";
 
 const PREVIEW_TEXT = "How vexingly quick daft zebras jump";
 
@@ -15,21 +19,15 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading }: {
 }) {
   const style = isHeading ? headingStyle : bodyStyle;
   return (
-    <div className="group flex items-baseline gap-4 border-b border-border px-4 py-3 transition-colors hover:bg-accent/50">
-      <div className="w-12 shrink-0">
-        <span className="text-xs font-semibold uppercase text-muted-foreground">{entry.token}</span>
+    <div className="group flex items-baseline gap-3 border-b border-border px-4 py-2.5 transition-colors hover:bg-accent/50">
+      <div className="w-10 shrink-0">
+        <span className="text-[10px] font-semibold uppercase text-muted-foreground">{entry.token}</span>
       </div>
-      <div className="w-20 shrink-0 text-right">
-        <span className="font-mono text-xs text-muted-foreground">{formatValue(entry, unit)}</span>
+      <div className="w-16 shrink-0 text-right">
+        <span className="font-mono text-[10px] text-muted-foreground">{formatValue(entry, unit)}</span>
       </div>
       <div className="min-w-0 flex-1 overflow-hidden">
-        <p
-          className="truncate"
-          style={{
-            fontSize: `${entry.px}px`,
-            ...style,
-          }}
-        >
+        <p className="truncate" style={{ fontSize: `${entry.px}px`, ...style }}>
           {PREVIEW_TEXT}
         </p>
       </div>
@@ -66,9 +64,9 @@ export default function TypeScalePreview() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <h2 className="text-sm font-semibold text-foreground">Type Scale</h2>
-        <span className="text-xs text-muted-foreground">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+        <h2 className="text-xs font-semibold text-foreground">Type Scale</h2>
+        <span className="text-[10px] text-muted-foreground">
           {config.baseFontSize}px · {config.scaleRatio}
         </span>
       </div>
@@ -83,6 +81,10 @@ export default function TypeScalePreview() {
             isHeading={headingTokens.has(entry.token)}
           />
         ))}
+        <ScaleGraph />
+        {config.compare.enabled && <ComparePanel />}
+        {config.responsive.enabled && <ResponsiveBreakpointPreview />}
+        <AccessibilityPanel />
       </div>
       <ExportPanel scale={scale} />
     </div>

@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
-import { SCALE_RATIOS, FONT_FAMILIES, type RoundingGrid } from "@/lib/types";
+import { SCALE_RATIOS, FONT_FAMILIES, PRESETS, type RoundingGrid } from "@/lib/types";
+import { configToUrlParams } from "@/lib/scale-utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -7,62 +9,97 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
-import { RotateCcw, Sun, Moon, Minus, Plus } from "lucide-react";
+import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 
 export default function ControlsPanel() {
-  const { config, updateConfig, updateBody, updateHeadings, updateResponsive, resetConfig } = useAppConfig();
+  const {
+    config, updateConfig, updateBody, updateHeadings, updateResponsive,
+    updateCompare, resetConfig, applyPreset, savedSystems, saveSystem, loadSystem, deleteSystem,
+  } = useAppConfig();
+
+  const [saveName, setSaveName] = useState("");
+  const [showPresets, setShowPresets] = useState(false);
+  const [showSaved, setShowSaved] = useState(false);
+
+  const handleShare = () => {
+    const params = configToUrlParams(config);
+    const url = `${window.location.origin}${window.location.pathname}?${params}`;
+    navigator.clipboard.writeText(url);
+  };
+
+  const handleSave = () => {
+    if (saveName.trim()) {
+      saveSystem(saveName.trim());
+      setSaveName("");
+    }
+  };
 
   return (
-    <div className="space-y-6 p-4 text-sm">
-      {/* Theme toggle */}
+    <div className="space-y-5 p-4 text-sm">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <span className="font-semibold text-foreground">Type Scale</span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleShare} title="Copy shareable URL">
+            <Share2 className="h-3.5 w-3.5" />
+          </Button>
           <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
+            variant="ghost" size="icon" className="h-7 w-7"
             onClick={() => updateConfig({ theme: config.theme === "light" ? "dark" : "light" })}
           >
-            {config.theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            {config.theme === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={resetConfig}>
-            <RotateCcw className="h-4 w-4" />
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={resetConfig}>
+            <RotateCcw className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
 
       <Separator />
 
+      {/* Presets */}
+      <div className="space-y-2">
+        <button
+          onClick={() => setShowPresets(!showPresets)}
+          className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {showPresets ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+          Presets
+        </button>
+        {showPresets && (
+          <div className="grid grid-cols-2 gap-1.5">
+            {Object.entries(PRESETS).map(([key, preset]) => (
+              <button
+                key={key}
+                onClick={() => applyPreset(preset.config)}
+                className="rounded-md border border-border px-2 py-1.5 text-left transition-colors hover:bg-accent"
+              >
+                <span className="block text-xs font-medium text-foreground">{preset.label}</span>
+                <span className="block text-[10px] text-muted-foreground">{preset.description}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Separator />
+
       {/* Base Font Size */}
       <div className="space-y-2">
-        <Label>Base Font Size</Label>
+        <Label className="text-xs">Base Font Size</Label>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 shrink-0"
-            onClick={() => updateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}
-          >
+          <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
+            onClick={() => updateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}>
             <Minus className="h-3 w-3" />
           </Button>
-          <Input
-            type="number"
-            min={10}
-            max={24}
-            value={config.baseFontSize}
+          <Input type="number" min={10} max={24} value={config.baseFontSize}
             onChange={(e) => {
               const v = Number(e.target.value);
               if (v >= 10 && v <= 24) updateConfig({ baseFontSize: v });
             }}
-            className="h-8 text-center"
-          />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 shrink-0"
-            onClick={() => updateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}
-          >
+            className="h-7 text-center text-xs" />
+          <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
+            onClick={() => updateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}>
             <Plus className="h-3 w-3" />
           </Button>
           <span className="text-muted-foreground text-xs">px</span>
@@ -71,55 +108,73 @@ export default function ControlsPanel() {
 
       {/* Scale Ratio */}
       <div className="space-y-2">
-        <Label>Scale Ratio</Label>
-        <Select
-          value={String(config.scaleRatio)}
-          onValueChange={(v) => updateConfig({ scaleRatio: Number(v) })}
-        >
-          <SelectTrigger className="h-8">
-            <SelectValue />
-          </SelectTrigger>
+        <Label className="text-xs">Scale Ratio</Label>
+        <Select value={String(config.scaleRatio)} onValueChange={(v) => updateConfig({ scaleRatio: Number(v) })}>
+          <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {SCALE_RATIOS.map((r) => (
-              <SelectItem key={r.value} value={String(r.value)}>
-                {r.label} — {r.value}
-              </SelectItem>
+              <SelectItem key={r.value} value={String(r.value)}>{r.label} — {r.value}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      {/* Unit */}
-      <div className="space-y-2">
-        <Label>Display Unit</Label>
-        <div className="flex gap-1">
-          {(["rem", "px", "pt"] as const).map((u) => (
-            <Button
-              key={u}
-              variant={config.unit === u ? "default" : "outline"}
-              size="sm"
-              className="h-7 flex-1 text-xs"
-              onClick={() => updateConfig({ unit: u })}
-            >
-              {u}
-            </Button>
-          ))}
+      {/* Unit + Rounding */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs">Unit</Label>
+          <div className="flex gap-0.5">
+            {(["rem", "px", "pt"] as const).map((u) => (
+              <Button key={u} variant={config.unit === u ? "default" : "outline"} size="sm"
+                className="h-6 flex-1 text-[10px] px-1" onClick={() => updateConfig({ unit: u })}>
+                {u}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs">Rounding</Label>
+          <div className="flex gap-0.5">
+            {([["none", "Off"], ["4px", "4"], ["8px", "8"]] as const).map(([value, label]) => (
+              <Button key={value} variant={config.rounding === value ? "default" : "outline"} size="sm"
+                className="h-6 flex-1 text-[10px] px-1" onClick={() => updateConfig({ rounding: value as RoundingGrid })}>
+                {label}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Rounding */}
+      <Separator />
+
+      {/* Compare Mode */}
       <div className="space-y-2">
-        <Label>Rounding</Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Compare Mode</Label>
+          <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })} />
+        </div>
+        {config.compare.enabled && (
+          <Select value={String(config.compare.scaleRatio)} onValueChange={(v) => updateCompare({ scaleRatio: Number(v) })}>
+            <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {SCALE_RATIOS.map((r) => (
+                <SelectItem key={r.value} value={String(r.value)}>{r.label} — {r.value}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </div>
+
+      <Separator />
+
+      {/* Preview Mode */}
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preview Mode</Label>
         <div className="flex gap-1">
-          {([["none", "Off"], ["4px", "4px"], ["8px", "8px"]] as const).map(([value, label]) => (
-            <Button
-              key={value}
-              variant={config.rounding === value ? "default" : "outline"}
-              size="sm"
-              className="h-7 flex-1 text-xs"
-              onClick={() => updateConfig({ rounding: value as RoundingGrid })}
-            >
-              {label}
+          {([["marketing", "Marketing"], ["article", "Article"], ["product", "Product UI"]] as const).map(([v, l]) => (
+            <Button key={v} variant={config.previewMode === v ? "default" : "outline"} size="sm"
+              className="h-6 flex-1 text-[10px]" onClick={() => updateConfig({ previewMode: v as "marketing" | "article" | "product" })}>
+              {l}
             </Button>
           ))}
         </div>
@@ -128,54 +183,51 @@ export default function ControlsPanel() {
       <Separator />
 
       {/* Body Settings */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Body Settings</Label>
-        <div className="space-y-2">
-          <Label className="text-xs">Font Family</Label>
+        <div className="space-y-1.5">
+          <Label className="text-[11px]">Font Family</Label>
           <Select value={config.body.fontFamily} onValueChange={(v) => updateBody({ fontFamily: v })}>
-            <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>
               {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
-          <Label className="text-xs">Weight: {config.body.fontWeight}</Label>
-          <Slider
-            min={100} max={900} step={100}
-            value={[config.body.fontWeight]}
-            onValueChange={([v]) => updateBody({ fontWeight: v })}
-          />
+        <div className="space-y-1.5">
+          <Label className="text-[11px]">Weight: {config.body.fontWeight}</Label>
+          <Slider min={100} max={900} step={100} value={[config.body.fontWeight]}
+            onValueChange={([v]) => updateBody({ fontWeight: v })} />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <Label className="text-xs">Line Height</Label>
+            <Label className="text-[11px]">Line Height</Label>
             <Input type="number" step={0.1} min={1} max={3} value={config.body.lineHeight}
-              onChange={(e) => updateBody({ lineHeight: Number(e.target.value) })} className="h-8" />
+              onChange={(e) => updateBody({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">Letter Spacing</Label>
+            <Label className="text-[11px]">Letter Spacing</Label>
             <Input type="number" step={0.01} value={config.body.letterSpacing}
-              onChange={(e) => updateBody({ letterSpacing: Number(e.target.value) })} className="h-8" />
+              onChange={(e) => updateBody({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <Label className="text-xs">Text Color</Label>
-            <div className="flex items-center gap-2">
+            <Label className="text-[11px]">Text Color</Label>
+            <div className="flex items-center gap-1.5">
               <input type="color" value={config.body.textColor}
                 onChange={(e) => updateBody({ textColor: e.target.value })}
-                className="h-8 w-8 cursor-pointer rounded border border-input" />
-              <span className="text-xs text-muted-foreground">{config.body.textColor}</span>
+                className="h-6 w-6 cursor-pointer rounded border border-input" />
+              <span className="text-[10px] text-muted-foreground">{config.body.textColor}</span>
             </div>
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">Background</Label>
-            <div className="flex items-center gap-2">
+            <Label className="text-[11px]">Background</Label>
+            <div className="flex items-center gap-1.5">
               <input type="color" value={config.body.backgroundColor}
                 onChange={(e) => updateBody({ backgroundColor: e.target.value })}
-                className="h-8 w-8 cursor-pointer rounded border border-input" />
-              <span className="text-xs text-muted-foreground">{config.body.backgroundColor}</span>
+                className="h-6 w-6 cursor-pointer rounded border border-input" />
+              <span className="text-[10px] text-muted-foreground">{config.body.backgroundColor}</span>
             </div>
           </div>
         </div>
@@ -184,50 +236,49 @@ export default function ControlsPanel() {
       <Separator />
 
       {/* Heading Settings */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Heading Settings</Label>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Inherit</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] text-muted-foreground">Inherit</span>
             <Switch checked={config.headings.inherit} onCheckedChange={(v) => updateHeadings({ inherit: v })} />
           </div>
         </div>
         {!config.headings.inherit && (
           <div className="space-y-2">
             <div className="space-y-1">
-              <Label className="text-xs">Font Family</Label>
+              <Label className="text-[11px]">Font Family</Label>
               <Select value={config.headings.fontFamily} onValueChange={(v) => updateHeadings({ fontFamily: v })}>
-                <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">Weight: {config.headings.fontWeight}</Label>
-              <Slider min={100} max={900} step={100}
-                value={[config.headings.fontWeight]}
+              <Label className="text-[11px]">Weight: {config.headings.fontWeight}</Label>
+              <Slider min={100} max={900} step={100} value={[config.headings.fontWeight]}
                 onValueChange={([v]) => updateHeadings({ fontWeight: v })} />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
-                <Label className="text-xs">Line Height</Label>
+                <Label className="text-[11px]">Line Height</Label>
                 <Input type="number" step={0.05} min={0.8} max={2} value={config.headings.lineHeight}
-                  onChange={(e) => updateHeadings({ lineHeight: Number(e.target.value) })} className="h-8" />
+                  onChange={(e) => updateHeadings({ lineHeight: Number(e.target.value) })} className="h-7 text-xs" />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">Letter Spacing</Label>
+                <Label className="text-[11px]">Letter Spacing</Label>
                 <Input type="number" step={0.01} value={config.headings.letterSpacing}
-                  onChange={(e) => updateHeadings({ letterSpacing: Number(e.target.value) })} className="h-8" />
+                  onChange={(e) => updateHeadings({ letterSpacing: Number(e.target.value) })} className="h-7 text-xs" />
               </div>
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">Color</Label>
-              <div className="flex items-center gap-2">
+              <Label className="text-[11px]">Color</Label>
+              <div className="flex items-center gap-1.5">
                 <input type="color" value={config.headings.color}
                   onChange={(e) => updateHeadings({ color: e.target.value })}
-                  className="h-8 w-8 cursor-pointer rounded border border-input" />
-                <span className="text-xs text-muted-foreground">{config.headings.color}</span>
+                  className="h-6 w-6 cursor-pointer rounded border border-input" />
+                <span className="text-[10px] text-muted-foreground">{config.headings.color}</span>
               </div>
             </div>
           </div>
@@ -237,47 +288,81 @@ export default function ControlsPanel() {
       <Separator />
 
       {/* Responsive Settings */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Responsive</Label>
           <Switch checked={config.responsive.enabled} onCheckedChange={(v) => updateResponsive({ enabled: v })} />
         </div>
         {config.responsive.enabled && (
-          <div className="space-y-2">
-            <div className="space-y-1">
-              <Label className="text-xs">Min Width (px)</Label>
-              <Input type="number" value={config.responsive.minWidth}
-                onChange={(e) => updateResponsive({ minWidth: Number(e.target.value) })} className="h-8" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">Base Font Size (px)</Label>
-              <Input type="number" min={10} max={24}
-                value={config.responsive.baseFontSize ?? ""}
-                placeholder="Same as main"
-                onChange={(e) => updateResponsive({ baseFontSize: e.target.value ? Number(e.target.value) : null })}
-                className="h-8" />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label className="text-xs">Inherit Scale Ratio</Label>
-              <Switch checked={config.responsive.inheritRatio}
-                onCheckedChange={(v) => updateResponsive({ inheritRatio: v })} />
-            </div>
-            {!config.responsive.inheritRatio && (
-              <div className="space-y-1">
-                <Label className="text-xs">Scale Ratio</Label>
-                <Select
-                  value={String(config.responsive.scaleRatio ?? config.scaleRatio)}
-                  onValueChange={(v) => updateResponsive({ scaleRatio: Number(v) })}
-                >
-                  <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {SCALE_RATIOS.map((r) => (
-                      <SelectItem key={r.value} value={String(r.value)}>{r.label} — {r.value}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+          <div className="space-y-3">
+            {config.responsive.breakpoints.map((bp, i) => (
+              <div key={i} className="space-y-1.5 rounded-md border border-border p-2">
+                <Label className="text-[11px] font-medium">{bp.label}</Label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] text-muted-foreground">Min Width</span>
+                    <Input type="number" value={bp.minWidth} className="h-6 text-[10px]"
+                      onChange={(e) => {
+                        const bps = [...config.responsive.breakpoints];
+                        bps[i] = { ...bps[i], minWidth: Number(e.target.value) };
+                        updateResponsive({ breakpoints: bps });
+                      }} />
+                  </div>
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] text-muted-foreground">Base Size</span>
+                    <Input type="number" value={bp.baseFontSize} min={10} max={24} className="h-6 text-[10px]"
+                      onChange={(e) => {
+                        const bps = [...config.responsive.breakpoints];
+                        bps[i] = { ...bps[i], baseFontSize: Number(e.target.value) };
+                        updateResponsive({ breakpoints: bps });
+                      }} />
+                  </div>
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] text-muted-foreground">Ratio</span>
+                    <Input type="number" step={0.001} value={bp.scaleRatio} className="h-6 text-[10px]"
+                      onChange={(e) => {
+                        const bps = [...config.responsive.breakpoints];
+                        bps[i] = { ...bps[i], scaleRatio: Number(e.target.value) };
+                        updateResponsive({ breakpoints: bps });
+                      }} />
+                  </div>
+                </div>
               </div>
-            )}
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Separator />
+
+      {/* Saved Systems */}
+      <div className="space-y-2">
+        <button
+          onClick={() => setShowSaved(!showSaved)}
+          className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {showSaved ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+          Saved Systems ({savedSystems.length})
+        </button>
+        {showSaved && (
+          <div className="space-y-2">
+            <div className="flex gap-1.5">
+              <Input placeholder="System name..." value={saveName}
+                onChange={(e) => setSaveName(e.target.value)} className="h-7 text-xs" />
+              <Button variant="outline" size="sm" className="h-7 shrink-0 text-xs" onClick={handleSave} disabled={!saveName.trim()}>
+                <Save className="mr-1 h-3 w-3" />Save
+              </Button>
+            </div>
+            {savedSystems.map((sys) => (
+              <div key={sys.id} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
+                <button onClick={() => loadSystem(sys.id)} className="text-xs font-medium text-foreground hover:underline">
+                  {sys.name}
+                </button>
+                <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => deleteSystem(sys.id)}>
+                  <Trash2 className="h-3 w-3 text-muted-foreground" />
+                </Button>
+              </div>
+            ))}
           </div>
         )}
       </div>
