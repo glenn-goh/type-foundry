@@ -125,3 +125,13 @@
     background: hsl(var(--muted-foreground) / 0.5);
   }
 }
+
+/* ── Sidebar overrides ── */
+aside [data-state] > svg {
+  color: hsl(var(--sidebar-muted));
+}
+
+aside:hover::-webkit-scrollbar-thumb,
+aside *:hover::-webkit-scrollbar-thumb {
+  background: hsl(var(--sidebar-border)) !important;
+}
