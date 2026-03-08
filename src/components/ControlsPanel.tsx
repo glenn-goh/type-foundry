@@ -22,6 +22,7 @@ export default function ControlsPanel() {
   const [saveName, setSaveName] = useState("");
   const [showLibrary, setShowLibrary] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeSource, setActiveSource] = useState<string | null>(null);
 
