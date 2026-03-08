@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { AppConfig, DEFAULT_CONFIG, SavedSystem } from "@/lib/types";
+import type { AppConfig, SavedSystem } from "@/lib/types";
+import { DEFAULT_CONFIG } from "@/lib/types";
 
 interface AppConfigContextType {
   config: AppConfig;
