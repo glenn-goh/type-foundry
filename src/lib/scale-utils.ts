@@ -72,6 +72,42 @@ export function generateTailwindConfig(scale: ScaleEntry[], unit: Unit): string 
   return `fontSize: {\n${lines.join("\n")}\n}`;
 }
 
+export function generateFigmaTokens(
+  scale: ScaleEntry[],
+  unit: Unit,
+  body: { fontFamily: string; fontWeight: number; lineHeight: number; letterSpacing: number },
+  headings: { inherit: boolean; fontFamily: string; fontWeight: number; lineHeight: number; letterSpacing: number }
+): string {
+  const headingTokens = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
+  const tokens: Record<string, Record<string, unknown>> = {};
+
+  scale.forEach((e) => {
+    const name = e.token === "p" ? "body" : e.token;
+    const isHeading = headingTokens.has(e.token);
+    const settings = isHeading && !headings.inherit ? headings : body;
+
+    tokens[name] = {
+      value: {
+        fontFamily: settings.fontFamily,
+        fontWeight: String(settings.fontWeight),
+        lineHeight: String(settings.lineHeight),
+        fontSize: formatValue(e, unit),
+        letterSpacing: `${settings.letterSpacing}em`,
+        paragraphSpacing: "0",
+        textDecoration: "none",
+        textCase: "none",
+      },
+      type: "typography",
+    };
+  });
+
+  const output = {
+    "type-scale": tokens,
+  };
+
+  return JSON.stringify(output, null, 2);
+}
+
 export function getFontFamilyStack(family: string): string {
   const stacks: Record<string, string> = {
     Inter: "'Inter', system-ui, sans-serif",
