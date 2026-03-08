@@ -24,15 +24,24 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading, previewText 
 }) {
   const style = isHeading ? headingStyle : bodyStyle;
   return (
-    <div className="group flex items-baseline gap-2 border-b border-border px-4 py-2.5 transition-colors hover:bg-accent/50">
+    <div
+      className="group flex items-baseline gap-3 border-b px-4 py-3 transition-colors"
+      style={{ borderColor: 'hsl(var(--border))' }}
+      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#f0ece4')}
+      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '')}
+    >
       <div className="w-10 shrink-0">
-        <span className="text-[10px] font-semibold uppercase text-muted-foreground">{entry.token}</span>
+        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '10px', color: 'hsl(var(--muted-foreground))', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+          {entry.token}
+        </span>
       </div>
-      <div className="w-12 shrink-0 text-right">
-        <span className="font-mono text-[10px] text-muted-foreground">{formatValue(entry, unit)}</span>
+      <div className="w-14 shrink-0 text-right">
+        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '10px', color: 'hsl(var(--muted-foreground))' }}>
+          {formatValue(entry, unit)}
+        </span>
       </div>
       <div className="min-w-0 flex-1 overflow-hidden">
-        <p className="truncate text-foreground" style={{ fontSize: `${entry.px}px`, ...style }}>
+        <p className="truncate" style={{ fontSize: `${entry.px}px`, color: 'hsl(var(--foreground))', ...style }}>
           {previewText}
         </p>
       </div>
@@ -68,30 +77,31 @@ export default function TypeScalePreview() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Header */}
-      <div className="flex items-center border-b border-border px-4 h-10">
-        <h2 className="text-xs font-semibold text-foreground">Type Scale</h2>
-      </div>
-
-      {/* Preview text input with reset */}
-      <div className="flex items-center gap-1.5 px-4 py-2 border-b border-border">
-        <Input
-          value={previewText}
-          onChange={(e) => setPreviewText(e.target.value)}
-          placeholder="Preview text..."
-          className="h-7 text-xs"
-        />
-        {previewText !== DEFAULT_PREVIEW_TEXT && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 shrink-0"
-            onClick={() => setPreviewText(DEFAULT_PREVIEW_TEXT)}
-            title="Reset to default text"
-          >
-            <RotateCcw className="h-3 w-3" />
-          </Button>
-        )}
+      {/* Header with inline preview input */}
+      <div className="flex items-center gap-3 border-b px-4 h-10" style={{ borderColor: 'hsl(var(--border))' }}>
+        <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))', whiteSpace: 'nowrap' }}>
+          Type Scale
+        </h2>
+        <div className="flex flex-1 items-center gap-1.5">
+          <Input
+            value={previewText}
+            onChange={(e) => setPreviewText(e.target.value)}
+            placeholder="Preview text..."
+            className="h-7 flex-1 text-xs"
+            style={{ fontFamily: "'DM Mono', monospace" }}
+          />
+          {previewText !== DEFAULT_PREVIEW_TEXT && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 shrink-0"
+              onClick={() => setPreviewText(DEFAULT_PREVIEW_TEXT)}
+              title="Reset to default text"
+            >
+              <RotateCcw className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Type scale rows */}
@@ -112,11 +122,23 @@ export default function TypeScalePreview() {
       {/* Bottom tabbed section */}
       <div className="border-t border-border">
         <Tabs defaultValue="graph" className="w-full">
-          <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent px-2 h-8">
-            <TabsTrigger value="graph" className="text-[10px] h-6 px-2.5 data-[state=active]:bg-accent rounded-sm">Graph</TabsTrigger>
-            <TabsTrigger value="compare" className="text-[10px] h-6 px-2.5 data-[state=active]:bg-accent rounded-sm">Compare & Density</TabsTrigger>
+          <TabsList className="w-full justify-start rounded-none border-b bg-transparent px-2 h-8" style={{ borderColor: 'hsl(var(--border))' }}>
+            <TabsTrigger value="graph"
+              className="h-6 px-3 rounded-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+              style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 500 }}>
+              Graph
+            </TabsTrigger>
+            <TabsTrigger value="compare"
+              className="h-6 px-3 rounded-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+              style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 500 }}>
+              Compare & Density
+            </TabsTrigger>
             {config.responsive.enabled && (
-              <TabsTrigger value="responsive" className="text-[10px] h-6 px-2.5 data-[state=active]:bg-accent rounded-sm">Responsive</TabsTrigger>
+              <TabsTrigger value="responsive"
+                className="h-6 px-3 rounded-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 500 }}>
+                Responsive
+              </TabsTrigger>
             )}
           </TabsList>
           <TabsContent value="graph" className="m-0 max-h-52 overflow-auto">
