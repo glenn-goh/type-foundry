@@ -374,7 +374,7 @@ export default function ControlsPanel() {
             <div className="space-y-1">
               <Label className="text-[11px]">Weight: {config.headings.fontWeight}</Label>
               <Slider min={100} max={900} step={100} value={[config.headings.fontWeight]}
-                onValueChange={([v]) => updateHeadings({ fontWeight: v })} />
+                onValueChange={([v]) => wrappedUpdateHeadings({ fontWeight: v })} />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
