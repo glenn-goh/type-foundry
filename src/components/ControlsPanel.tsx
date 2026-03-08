@@ -155,11 +155,19 @@ export default function ControlsPanel() {
             {/* Presets */}
             <div className="space-y-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
-              <Select value={activePresetKey ?? undefined} onValueChange={handleApplyPreset}>
+              <Select value={activePresetKey ?? "custom"} onValueChange={(v) => { if (v !== "custom") handleApplyPreset(v); }}>
                 <SelectTrigger className="h-8 text-xs">
-                  <SelectValue placeholder={activeLabel} />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="py-1">
+                  <SelectItem value="custom" className="py-2 pl-3 pr-8 [&>span:first-child]:left-auto [&>span:first-child]:right-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium">Custom</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {config.baseFontSize}px · {config.scaleRatio}
+                      </span>
+                    </div>
+                  </SelectItem>
                   {Object.entries(PRESETS).map(([key, preset]) => (
                     <SelectItem key={key} value={key} className="py-2.5 pl-3 pr-8 [&>span:first-child]:left-auto [&>span:first-child]:right-2">
                       <div className="flex flex-col gap-0.5">
