@@ -24,10 +24,11 @@ function UrlParamLoader() {
 }
 
 function AppShell() {
+  const { config } = useAppConfig();
   const [previewCollapsed, setPreviewCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden flex-col bg-background lg:flex-row">
+    <div className={`flex h-screen w-screen overflow-hidden flex-col bg-background lg:flex-row${config.theme === "dark" ? " dark" : ""}`}>
       <UrlParamLoader />
       <aside
           className="w-full shrink-0 border-b lg:w-64 lg:min-w-[16rem] lg:max-w-[16rem] lg:border-b-0 lg:border-r"

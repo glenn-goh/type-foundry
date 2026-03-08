@@ -71,7 +71,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
         </Select>
       </div>
 
-      <div className="flex-1 overflow-auto p-6" style={{ backgroundColor: '#f0ece6', color: baseStyle.color, fontFamily: baseStyle.fontFamily, fontWeight: baseStyle.fontWeight, lineHeight: baseStyle.lineHeight, letterSpacing: baseStyle.letterSpacing }}>
+      <div className="flex-1 overflow-auto bg-muted/40 p-6" style={{ color: baseStyle.color, fontFamily: baseStyle.fontFamily, fontWeight: baseStyle.fontWeight, lineHeight: baseStyle.lineHeight, letterSpacing: baseStyle.letterSpacing }}>
         <div className="mx-auto max-w-4xl rounded-lg shadow-sm border border-border overflow-hidden" style={{ backgroundColor: config.body.backgroundColor }}>
           {/* Navbar */}
           <nav className="flex items-center justify-between border-b px-10 py-3" style={{ borderColor: `${config.body.textColor}15` }}>

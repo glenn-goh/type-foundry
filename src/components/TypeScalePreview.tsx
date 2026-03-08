@@ -25,10 +25,8 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading, previewText 
   const style = isHeading ? headingStyle : bodyStyle;
   return (
     <div
-      className="group flex items-baseline gap-3 border-b px-4 py-3 transition-colors"
+      className="group flex items-baseline gap-3 border-b px-4 py-3 transition-colors hover:bg-accent/60"
       style={{ borderColor: 'hsl(var(--border))' }}
-      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#f0ece4')}
-      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '')}
     >
       <div className="w-10 shrink-0">
         <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '10px', color: 'hsl(var(--muted-foreground))', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
