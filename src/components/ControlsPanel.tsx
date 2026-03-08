@@ -244,7 +244,7 @@ export default function ControlsPanel() {
           <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {SCALE_RATIOS.map((r) => (
-              <SelectItem key={r.value} value={String(r.value)}>{r.label} — {r.value}</SelectItem>
+              <SelectItem key={r.value} value={String(r.value)}>{r.value} ({r.label})</SelectItem>
             ))}
           </SelectContent>
         </Select>
