@@ -4,7 +4,17 @@ export type ScaleToken = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "small"
 
 export type RoundingGrid = "none" | "4px" | "8px";
 
-export type PreviewMode = "marketing" | "article" | "product";
+export type PreviewMode = "marketing" | "article" | "product" | "blog" | "ecommerce" | "documentation" | "portfolio";
+
+export const PREVIEW_MODES: { value: PreviewMode; label: string }[] = [
+  { value: "marketing", label: "Marketing Page" },
+  { value: "article", label: "Article" },
+  { value: "product", label: "Product UI" },
+  { value: "blog", label: "Blog Feed" },
+  { value: "ecommerce", label: "E-Commerce" },
+  { value: "documentation", label: "Documentation" },
+  { value: "portfolio", label: "Portfolio" },
+];
 
 export interface ScaleEntry {
   token: ScaleToken;
