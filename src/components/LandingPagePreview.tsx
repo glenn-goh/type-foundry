@@ -82,8 +82,8 @@ export default function LandingPagePreview() {
             <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
               Archway
             </span>
-            <div className="hidden md:flex items-center gap-5">
-              {["Overview", "Solutions", "Resources", "Docs", "Blog"].map((item) => (
+            <div className="flex items-center gap-5">
+              {["Overview", "Docs", "Blog"].map((item) => (
                 <span key={item} style={{ fontSize: `${sizeMap.small}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
                   {item}
                 </span>
