@@ -70,7 +70,7 @@ export default function LandingPagePreview() {
 
         {/* Marketing */}
         {config.previewMode === "marketing" && (
-          <div className="flex flex-1 items-center px-6 py-12 md:px-12">
+          <div className="mx-auto max-w-2xl flex flex-1 items-center px-6 py-10">
             <div className="max-w-xl space-y-6">
               <h1 style={hStyle("h1")}>Ship faster with tools that scale</h1>
               <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
@@ -121,7 +121,7 @@ export default function LandingPagePreview() {
 
         {/* Product UI */}
         {config.previewMode === "product" && (
-          <div className="flex-1 p-6 space-y-6">
+          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
             <div className="flex items-center justify-between">
               <h2 style={hStyle("h3")}>Dashboard</h2>
               <button className="rounded-md px-3 py-1.5 text-xs font-medium"
@@ -184,7 +184,7 @@ export default function LandingPagePreview() {
 
         {/* E-Commerce */}
         {config.previewMode === "ecommerce" && (
-          <div className="p-6 space-y-6">
+          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
             <div className="flex items-center justify-between">
               <h2 style={hStyle("h3")}>Featured Products</h2>
               <span style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50 cursor-pointer hover:opacity-80">View all →</span>
