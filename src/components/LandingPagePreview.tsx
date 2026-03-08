@@ -41,10 +41,10 @@ export default function LandingPagePreview() {
       {/* Navbar */}
       <nav className="flex items-center justify-between border-b px-6 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
         <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
-          Zephtor
+          Archway
         </span>
         <div className="hidden md:flex items-center gap-5">
-          {["Home", "Features", "Pricing", "About Us", "Contact"].map((item) => (
+          {["Overview", "Solutions", "Resources", "Docs", "Blog"].map((item) => (
             <span key={item} style={{ fontSize: `${sizeMap.small}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
               {item}
             </span>
