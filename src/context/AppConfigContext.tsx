@@ -60,6 +60,9 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    // Load Google Fonts for current selection
+    loadGoogleFont(config.body.fontFamily);
+    if (!config.headings.inherit) loadGoogleFont(config.headings.fontFamily);
   }, [config]);
 
   useEffect(() => {
