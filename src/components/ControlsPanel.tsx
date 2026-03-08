@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
+import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight, Copy, Check, Type } from "lucide-react";
 
 export default function ControlsPanel() {
   const {
