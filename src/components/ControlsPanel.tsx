@@ -177,7 +177,7 @@ export default function ControlsPanel() {
                             {preset.config.baseFontSize}px · {preset.config.scaleRatio}
                           </span>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">{preset.description}</span>
+                        <span data-desc className="text-[10px] text-muted-foreground">{preset.description}</span>
                       </div>
                     </SelectItem>
                   ))}
