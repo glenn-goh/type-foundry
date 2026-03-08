@@ -93,7 +93,7 @@ export default function LandingPagePreview() {
 
         {/* Marketing */}
         {config.previewMode === "marketing" && (
-          <div className="mx-auto max-w-2xl flex flex-1 items-center px-6 py-10">
+          <div className="mx-auto max-w-2xl flex flex-1 items-center px-10 py-10">
             <div className="max-w-xl space-y-6">
               <h1 style={hStyle("h1")}>Ship faster with tools that scale</h1>
               <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
