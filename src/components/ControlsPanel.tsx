@@ -20,24 +20,11 @@ export default function ControlsPanel() {
   } = useAppConfig();
 
   const [saveName, setSaveName] = useState("");
-  const [showLibrary, setShowLibrary] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeSource, setActiveSource] = useState<string | null>(null);
   const [isCustomRatio, setIsCustomRatio] = useState(false);
-
-  // Determine current active label
-  const activeLabel = (() => {
-    if (activeSource) return activeSource;
-    // Check if current config matches a preset
-    for (const [, preset] of Object.entries(PRESETS)) {
-      if (config.baseFontSize === preset.config.baseFontSize && config.scaleRatio === preset.config.scaleRatio) {
-        return preset.label;
-      }
-    }
-    return "Custom";
-  })();
 
   const activePresetKey = (() => {
     for (const [key, preset] of Object.entries(PRESETS)) {
