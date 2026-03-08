@@ -310,6 +310,46 @@ export default function ControlsPanel() {
             className="h-7 text-xs" placeholder="e.g. 1.333"
           />
         )}
+        {/* Compare Mode - inline below scale ratio */}
+        <div className="flex items-center justify-between pt-1">
+          <Label className="text-[11px] text-muted-foreground">Compare Mode</Label>
+          <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
+        </div>
+        {config.compare.enabled && (
+          <div className="space-y-1.5">
+            <Label className="text-[11px]">Compare Ratio</Label>
+            <Select
+              value={SCALE_RATIOS.some((r) => r.value === config.compare.scaleRatio) ? String(config.compare.scaleRatio) : "custom-compare"}
+              onValueChange={(v) => {
+                if (v !== "custom-compare") updateCompare({ scaleRatio: Number(v) });
+              }}
+            >
+              <SelectTrigger className="h-7 text-xs">
+                <SelectValue>
+                  {SCALE_RATIOS.some((r) => r.value === config.compare.scaleRatio)
+                    ? `${config.compare.scaleRatio} (${SCALE_RATIOS.find((r) => r.value === config.compare.scaleRatio)?.label})`
+                    : `${config.compare.scaleRatio} (Custom)`}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {SCALE_RATIOS.map((r) => (
+                  <SelectItem key={r.value} value={String(r.value)}>{r.value} ({r.label})</SelectItem>
+                ))}
+                <SelectItem value="custom-compare">Custom...</SelectItem>
+              </SelectContent>
+            </Select>
+            {!SCALE_RATIOS.some((r) => r.value === config.compare.scaleRatio) && (
+              <Input
+                type="number" step={0.001} min={1} max={3} value={config.compare.scaleRatio}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (v >= 1 && v <= 3) updateCompare({ scaleRatio: Math.round(v * 1000) / 1000 });
+                }}
+                className="h-7 text-xs" placeholder="e.g. 1.333"
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {/* Unit + Rounding */}
@@ -336,26 +376,6 @@ export default function ControlsPanel() {
             ))}
           </div>
         </div>
-      </div>
-
-      <Separator />
-
-      {/* Compare Mode */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Compare Mode</Label>
-          <Switch checked={config.compare.enabled} onCheckedChange={(v) => updateCompare({ enabled: v })} className="data-[state=unchecked]:bg-muted-foreground/30" />
-        </div>
-        {config.compare.enabled && (
-          <Select value={String(config.compare.scaleRatio)} onValueChange={(v) => updateCompare({ scaleRatio: Number(v) })}>
-            <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {SCALE_RATIOS.map((r) => (
-                <SelectItem key={r.value} value={String(r.value)}>{r.label} — {r.value}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
       </div>
 
       <Separator />
