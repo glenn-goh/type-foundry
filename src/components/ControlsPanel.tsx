@@ -36,6 +36,15 @@ export default function ControlsPanel() {
     return "Custom";
   })();
 
+  const activePresetKey = (() => {
+    for (const [key, preset] of Object.entries(PRESETS)) {
+      if (config.baseFontSize === preset.config.baseFontSize && config.scaleRatio === preset.config.scaleRatio) {
+        return key;
+      }
+    }
+    return null;
+  })();
+
   const shareUrl = (() => {
     const params = configToUrlParams(config);
     return `${window.location.origin}${window.location.pathname}?${params}`;
