@@ -165,7 +165,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     backgroundColor: "#FFFFFF",
   },
   headings: {
-    inherit: true,
+    inherit: false,
     fontFamily: "Inter",
     fontWeight: 700,
     lineHeight: 1.15,
