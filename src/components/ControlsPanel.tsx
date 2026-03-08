@@ -201,7 +201,7 @@ export default function ControlsPanel() {
           <Input type="number" min={10} max={24} value={config.baseFontSize}
             onChange={(e) => {
               const v = Number(e.target.value);
-              if (v >= 10 && v <= 24) updateConfig({ baseFontSize: v });
+              if (v >= 10 && v <= 24) wrappedUpdateConfig({ baseFontSize: v });
             }}
             className="h-7 text-center text-xs" />
           <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
