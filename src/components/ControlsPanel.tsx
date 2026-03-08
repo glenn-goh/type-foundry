@@ -421,12 +421,7 @@ export default function ControlsPanel() {
           <div className="space-y-2">
             <div className="space-y-1">
               <Label className="text-[11px]">Font Family</Label>
-              <Select value={config.headings.fontFamily} onValueChange={(v) => wrappedUpdateHeadings({ fontFamily: v })}>
-                <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <FontSelector value={config.headings.fontFamily} onValueChange={(v) => wrappedUpdateHeadings({ fontFamily: v })} />
             </div>
             <div className="space-y-1">
               <Label className="text-[11px]">Weight: {config.headings.fontWeight}</Label>
