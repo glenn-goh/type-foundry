@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
-import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
 
 export default function ControlsPanel() {
   const {
@@ -18,13 +19,19 @@ export default function ControlsPanel() {
   } = useAppConfig();
 
   const [saveName, setSaveName] = useState("");
-  const [showPresets, setShowPresets] = useState(false);
-  const [showSaved, setShowSaved] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const handleShare = () => {
+  const shareUrl = (() => {
     const params = configToUrlParams(config);
-    const url = `${window.location.origin}${window.location.pathname}?${params}`;
-    navigator.clipboard.writeText(url);
+    return `${window.location.origin}${window.location.pathname}?${params}`;
+  })();
+
+  const handleCopyShare = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSave = () => {
@@ -40,7 +47,7 @@ export default function ControlsPanel() {
       <div className="flex items-center justify-between">
         <span className="font-semibold text-foreground">TypeForge</span>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleShare} title="Copy shareable URL">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShareOpen(true)} title="Share">
             <Share2 className="h-3.5 w-3.5" />
           </Button>
           <Button
@@ -67,29 +74,75 @@ export default function ControlsPanel() {
         </div>
       </div>
 
+      {/* Share Modal */}
+      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-sm">Share Configuration</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground">Copy this link to share your current type scale settings.</p>
+            <div className="flex items-center gap-2">
+              <Input value={shareUrl} readOnly className="h-8 text-xs font-mono" />
+              <Button variant="outline" size="sm" className="h-8 shrink-0" onClick={handleCopyShare}>
+                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Separator />
 
-      {/* Presets */}
+      {/* Library: Presets + Saved */}
       <div className="space-y-2">
         <button
-          onClick={() => setShowPresets(!showPresets)}
+          onClick={() => setShowLibrary(!showLibrary)}
           className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
         >
-          {showPresets ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-          Presets
+          {showLibrary ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+          Library
         </button>
-        {showPresets && (
-          <div className="grid grid-cols-2 gap-1.5">
-            {Object.entries(PRESETS).map(([key, preset]) => (
-              <button
-                key={key}
-                onClick={() => applyPreset(preset.config)}
-                className="rounded-md border border-border px-2 py-1.5 text-left transition-colors hover:bg-accent"
-              >
-                <span className="block text-xs font-medium text-foreground">{preset.label}</span>
-                <span className="block text-[10px] text-muted-foreground">{preset.description}</span>
-              </button>
-            ))}
+        {showLibrary && (
+          <div className="space-y-3">
+            {/* Presets */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
+              <div className="grid grid-cols-2 gap-1.5">
+                {Object.entries(PRESETS).map(([key, preset]) => (
+                  <button
+                    key={key}
+                    onClick={() => applyPreset(preset.config)}
+                    className="rounded-md border border-border px-2 py-1.5 text-left transition-colors hover:bg-accent"
+                  >
+                    <span className="block text-xs font-medium text-foreground">{preset.label}</span>
+                    <span className="block text-[10px] text-muted-foreground">{preset.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Saved Systems */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Saved ({savedSystems.length})</span>
+              <div className="flex gap-1.5">
+                <Input placeholder="System name..." value={saveName}
+                  onChange={(e) => setSaveName(e.target.value)} className="h-7 text-xs" />
+                <Button variant="outline" size="sm" className="h-7 shrink-0 text-xs" onClick={handleSave} disabled={!saveName.trim()}>
+                  <Save className="mr-1 h-3 w-3" />Save
+                </Button>
+              </div>
+              {savedSystems.map((sys) => (
+                <div key={sys.id} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
+                  <button onClick={() => loadSystem(sys.id)} className="text-xs font-medium text-foreground hover:underline">
+                    {sys.name}
+                  </button>
+                  <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => deleteSystem(sys.id)}>
+                    <Trash2 className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -324,40 +377,6 @@ export default function ControlsPanel() {
                       }} />
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Separator />
-
-      {/* Saved Systems */}
-      <div className="space-y-2">
-        <button
-          onClick={() => setShowSaved(!showSaved)}
-          className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {showSaved ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-          Saved Systems ({savedSystems.length})
-        </button>
-        {showSaved && (
-          <div className="space-y-2">
-            <div className="flex gap-1.5">
-              <Input placeholder="System name..." value={saveName}
-                onChange={(e) => setSaveName(e.target.value)} className="h-7 text-xs" />
-              <Button variant="outline" size="sm" className="h-7 shrink-0 text-xs" onClick={handleSave} disabled={!saveName.trim()}>
-                <Save className="mr-1 h-3 w-3" />Save
-              </Button>
-            </div>
-            {savedSystems.map((sys) => (
-              <div key={sys.id} className="flex items-center justify-between rounded-md border border-border px-2 py-1.5">
-                <button onClick={() => loadSystem(sys.id)} className="text-xs font-medium text-foreground hover:underline">
-                  {sys.name}
-                </button>
-                <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => deleteSystem(sys.id)}>
-                  <Trash2 className="h-3 w-3 text-muted-foreground" />
-                </Button>
               </div>
             ))}
           </div>
