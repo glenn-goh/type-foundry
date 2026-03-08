@@ -3,6 +3,7 @@ import ControlsPanel from "@/components/ControlsPanel";
 import TypeScalePreview from "@/components/TypeScalePreview";
 import LandingPagePreview from "@/components/LandingPagePreview";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 
 function AppShell() {
   return (
@@ -14,15 +15,18 @@ function AppShell() {
         </ScrollArea>
       </aside>
 
-      {/* Center: Type Scale Preview */}
-      <main className="flex-1 border-b border-border lg:border-b-0 lg:border-r">
-        <TypeScalePreview />
-      </main>
-
-      {/* Right: Live Landing Page Preview */}
-      <section className="flex-1 min-h-[40vh]">
-        <LandingPagePreview />
-      </section>
+      {/* Center + Right: Resizable split */}
+      <div className="flex-1 min-h-0">
+        <ResizablePanelGroup direction="horizontal" className="h-full">
+          <ResizablePanel defaultSize={50} minSize={25}>
+            <TypeScalePreview />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={50} minSize={25}>
+            <LandingPagePreview />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </div>
   );
 }
