@@ -8,14 +8,18 @@ import ComparePanel from "./ComparePanel";
 import ResponsiveBreakpointPreview from "./ResponsiveBreakpointPreview";
 import AccessibilityPanel from "./AccessibilityPanel";
 
-const PREVIEW_TEXT = "How vexingly quick daft zebras jump";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
-function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading }: {
+const DEFAULT_PREVIEW_TEXT = "How vexingly quick daft zebras jump";
+
+function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading, previewText }: {
   entry: ScaleEntry;
   unit: "rem" | "px" | "pt";
   bodyStyle: React.CSSProperties;
   headingStyle: React.CSSProperties;
   isHeading: boolean;
+  previewText: string;
 }) {
   const style = isHeading ? headingStyle : bodyStyle;
   return (
@@ -27,8 +31,8 @@ function TypeRow({ entry, unit, bodyStyle, headingStyle, isHeading }: {
         <span className="font-mono text-[10px] text-muted-foreground">{formatValue(entry, unit)}</span>
       </div>
       <div className="min-w-0 flex-1 overflow-hidden">
-        <p className="truncate" style={{ fontSize: `${entry.px}px`, ...style }}>
-          {PREVIEW_TEXT}
+        <p className="truncate text-foreground" style={{ fontSize: `${entry.px}px`, ...style }}>
+          {previewText}
         </p>
       </div>
     </div>
