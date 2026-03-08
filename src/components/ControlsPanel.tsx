@@ -79,6 +79,14 @@ export default function ControlsPanel() {
     setActiveSource(null);
     updateConfig(partial);
   };
+  const wrappedUpdateBody = (partial: Partial<typeof config.body>) => {
+    setActiveSource(null);
+    updateBody(partial);
+  };
+  const wrappedUpdateHeadings = (partial: Partial<typeof config.headings>) => {
+    setActiveSource(null);
+    updateHeadings(partial);
+  };
 
   return (
     <div className="space-y-5 p-4 text-sm">
