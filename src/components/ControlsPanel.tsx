@@ -129,11 +129,24 @@ export default function ControlsPanel() {
           >
             {config.theme === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
           </Button>
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={resetConfig}>
-            <RotateCcw className="h-3.5 w-3.5" />
-          </Button>
         </div>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reset all settings?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will revert all typography settings back to their defaults. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => { resetConfig(); setActiveSource(null); }}>Reset</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Share Modal */}
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
