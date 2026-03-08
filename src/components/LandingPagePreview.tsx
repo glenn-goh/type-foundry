@@ -40,22 +40,43 @@ export default function LandingPagePreview() {
     letterSpacing: `${config.body.letterSpacing}em`,
   };
 
+  const [collapsed, setCollapsed] = useState(false);
+
+  if (collapsed) {
+    return (
+      <div className="flex h-full flex-col items-center border-l border-border bg-muted/30 pt-2">
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setCollapsed(false)} title="Expand live preview">
+          <PanelRightOpen className="h-4 w-4" />
+        </Button>
+        <span className="mt-2 text-[10px] text-muted-foreground [writing-mode:vertical-rl] rotate-180">Live Preview</span>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* Preview Mode Switcher */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-2">
-        <span className="text-xs font-semibold text-foreground">Live Preview</span>
-        <Select value={config.previewMode} onValueChange={(v) => updateConfig({ previewMode: v as PreviewMode })}>
-          <SelectTrigger className="h-7 w-40 text-[11px]"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            {PREVIEW_MODES.map((m) => (
-              <SelectItem key={m.value} value={m.value} className="text-xs">{m.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex items-center justify-between border-b border-border px-4 h-10">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-foreground">Live Preview</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Select value={config.previewMode} onValueChange={(v) => updateConfig({ previewMode: v as PreviewMode })}>
+            <SelectTrigger className="h-7 w-40 text-[11px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {PREVIEW_MODES.map((m) => (
+                <SelectItem key={m.value} value={m.value} className="text-xs">{m.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setCollapsed(true)} title="Collapse live preview">
+            <PanelRightClose className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto" style={baseStyle}>
+      <div className="flex-1 overflow-auto bg-muted/30 p-6" style={{ color: baseStyle.color, fontFamily: baseStyle.fontFamily, fontWeight: baseStyle.fontWeight, lineHeight: baseStyle.lineHeight, letterSpacing: baseStyle.letterSpacing }}>
+        <div className="mx-auto max-w-4xl rounded-lg shadow-sm border border-border overflow-hidden" style={{ backgroundColor: config.body.backgroundColor }}>
         {/* Navbar */}
         <nav className="flex items-center justify-between border-b px-6 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
           <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
