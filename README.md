@@ -36,8 +36,8 @@ A visual type scale design tool for crafting beautiful, consistent typography sy
 
 ```sh
 # 1. Clone the repository
-git clone https://github.com/glenn-goh/typeforge.git
-cd typeforge
+git clone https://github.com/glenn-goh/type-foundry.git
+cd type-foundry
 
 # 2. Install dependencies
 bun install
