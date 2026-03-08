@@ -239,7 +239,7 @@ export default function LandingPagePreview() {
 
         {/* Documentation */}
         {config.previewMode === "documentation" && (
-          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
+          <div className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <div className="space-y-1">
               <p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-40 uppercase tracking-wider font-medium">Getting Started</p>
               <h1 style={hStyle("h2")}>Installation</h1>
