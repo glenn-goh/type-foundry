@@ -332,7 +332,7 @@ export default function ControlsPanel() {
             <Label className="text-[11px]">Text Color</Label>
             <div className="flex items-center gap-1.5">
               <input type="color" value={config.body.textColor}
-                onChange={(e) => updateBody({ textColor: e.target.value })}
+                onChange={(e) => wrappedUpdateBody({ textColor: e.target.value })}
                 className="h-6 w-6 cursor-pointer rounded border border-input" />
               <span className="text-[10px] text-muted-foreground">{config.body.textColor}</span>
             </div>
