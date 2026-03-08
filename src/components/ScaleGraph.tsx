@@ -70,7 +70,7 @@ export default function ScaleGraph() {
               ))}
             </Bar>
             {compareScale && (
-              <Bar dataKey="compareSize" radius={[0, 3, 3, 0]} maxBarSize={12} fill="hsl(var(--destructive))" opacity={0.5} />
+              <Bar dataKey="compareSize" radius={[0, 3, 3, 0]} maxBarSize={12} fill="hsl(199 89% 48%)" opacity={0.6} />
             )}
           </BarChart>
         </ResponsiveContainer>
