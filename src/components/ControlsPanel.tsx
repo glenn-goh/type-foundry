@@ -147,7 +147,7 @@ export default function ControlsPanel() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => { resetConfig(); setActiveSource(null); }}>Reset</AlertDialogAction>
+            <AlertDialogAction onClick={() => { const currentTheme = config.theme; resetConfig(); setActiveSource(null); setIsCustomRatio(false); /* Restore current theme mode */ if (currentTheme === "dark") { updateConfig({ theme: "dark" }); updateBody({ textColor: "#E5E7EB", backgroundColor: "#111318" }); updateHeadings({ color: "#F3F4F6" }); } }}>Reset</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
