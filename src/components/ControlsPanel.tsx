@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
-import { SCALE_RATIOS, FONT_FAMILIES, PRESETS, type RoundingGrid } from "@/lib/types";
+import { SCALE_RATIOS, PRESETS, type RoundingGrid } from "@/lib/types";
 import { configToUrlParams } from "@/lib/scale-utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight, Copy, Check, Type } from "lucide-react";
+import FontSelector from "@/components/FontSelector";
 
 export default function ControlsPanel() {
   const {
@@ -364,12 +365,7 @@ export default function ControlsPanel() {
         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Body Settings</Label>
         <div className="space-y-1.5">
           <Label className="text-[11px]">Font Family</Label>
-          <Select value={config.body.fontFamily} onValueChange={(v) => wrappedUpdateBody({ fontFamily: v })}>
-            <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <FontSelector value={config.body.fontFamily} onValueChange={(v) => wrappedUpdateBody({ fontFamily: v })} />
         </div>
         <div className="space-y-1.5">
           <Label className="text-[11px]">Weight: {config.body.fontWeight}</Label>
@@ -425,12 +421,7 @@ export default function ControlsPanel() {
           <div className="space-y-2">
             <div className="space-y-1">
               <Label className="text-[11px]">Font Family</Label>
-              <Select value={config.headings.fontFamily} onValueChange={(v) => wrappedUpdateHeadings({ fontFamily: v })}>
-                <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {FONT_FAMILIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <FontSelector value={config.headings.fontFamily} onValueChange={(v) => wrappedUpdateHeadings({ fontFamily: v })} />
             </div>
             <div className="space-y-1">
               <Label className="text-[11px]">Weight: {config.headings.fontWeight}</Label>

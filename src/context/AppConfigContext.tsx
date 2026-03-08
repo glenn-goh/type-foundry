@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { AppConfig, SavedSystem } from "@/lib/types";
 import { DEFAULT_CONFIG } from "@/lib/types";
+import { loadGoogleFont } from "@/lib/scale-utils";
 
 interface AppConfigContextType {
   config: AppConfig;
@@ -59,6 +60,9 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    // Load Google Fonts for current selection
+    loadGoogleFont(config.body.fontFamily);
+    if (!config.headings.inherit) loadGoogleFont(config.headings.fontFamily);
   }, [config]);
 
   useEffect(() => {

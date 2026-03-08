@@ -140,17 +140,42 @@ export function generateFigmaTokens(
   return JSON.stringify(output, null, 2);
 }
 
+const SYSTEM_FONT_STACKS: Record<string, string> = {
+  Inter: "'Inter', system-ui, sans-serif",
+  Roboto: "'Roboto', system-ui, sans-serif",
+  "Open Sans": "'Open Sans', system-ui, sans-serif",
+  "System UI": "system-ui, -apple-system, sans-serif",
+  "Helvetica Neue": "'Helvetica Neue', Helvetica, Arial, sans-serif",
+  Arial: "Arial, Helvetica, sans-serif",
+  Georgia: "Georgia, 'Times New Roman', serif",
+};
+
+const SERIF_FONTS = new Set([
+  "Georgia", "Crimson Text", "DM Serif Display", "Libre Baskerville",
+  "Lora", "Merriweather", "Noto Serif", "Playfair Display", "Source Serif 4", "Bitter",
+]);
+
+const MONO_FONTS = new Set([
+  "Inconsolata", "JetBrains Mono", "Source Code Pro", "Space Mono",
+]);
+
 export function getFontFamilyStack(family: string): string {
-  const stacks: Record<string, string> = {
-    Inter: "'Inter', system-ui, sans-serif",
-    Roboto: "'Roboto', system-ui, sans-serif",
-    "Open Sans": "'Open Sans', system-ui, sans-serif",
-    "System UI": "system-ui, -apple-system, sans-serif",
-    "Helvetica Neue": "'Helvetica Neue', Helvetica, Arial, sans-serif",
-    Arial: "Arial, Helvetica, sans-serif",
-    Georgia: "Georgia, 'Times New Roman', serif",
-  };
-  return stacks[family] || "system-ui, sans-serif";
+  if (SYSTEM_FONT_STACKS[family]) return SYSTEM_FONT_STACKS[family];
+  const fallback = MONO_FONTS.has(family) ? "monospace" : SERIF_FONTS.has(family) ? "serif" : "sans-serif";
+  return `'${family}', ${fallback}`;
+}
+
+// Track loaded Google Fonts to avoid duplicate link elements
+const loadedGoogleFonts = new Set<string>();
+
+export function loadGoogleFont(family: string): void {
+  if (loadedGoogleFonts.has(family)) return;
+  if (SYSTEM_FONT_STACKS[family]) return; // system font, no need to load
+  loadedGoogleFonts.add(family);
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@100;200;300;400;500;600;700;800;900&display=swap`;
+  document.head.appendChild(link);
 }
 
 export function getScaleDensity(ratio: number): { label: string; description: string } {
