@@ -179,21 +179,6 @@ export default function ControlsPanel() {
 
       <Separator />
 
-      {/* Preview Mode */}
-      <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preview Mode</Label>
-        <div className="flex gap-1">
-          {([["marketing", "Marketing"], ["article", "Article"], ["product", "Product UI"]] as const).map(([v, l]) => (
-            <Button key={v} variant={config.previewMode === v ? "default" : "outline"} size="sm"
-              className="h-6 flex-1 text-[10px]" onClick={() => updateConfig({ previewMode: v as "marketing" | "article" | "product" })}>
-              {l}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <Separator />
-
       {/* Body Settings */}
       <div className="space-y-2.5">
         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Body Settings</Label>
