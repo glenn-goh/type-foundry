@@ -156,7 +156,7 @@ export default function ControlsPanel() {
             <div className="space-y-1.5">
               <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Presets</span>
               <Select value={activePresetKey ?? "custom"} onValueChange={(v) => { if (v !== "custom") handleApplyPreset(v); }}>
-                <SelectTrigger className="h-8 text-xs">
+                <SelectTrigger className="h-8 text-xs [&_[data-desc]]:hidden">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="py-1">
