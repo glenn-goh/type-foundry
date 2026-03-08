@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
+import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, ChevronDown, ChevronRight, Copy, Check, Type } from "lucide-react";
 
 export default function ControlsPanel() {
   const {
@@ -106,7 +106,10 @@ export default function ControlsPanel() {
     <div className="space-y-5 p-4 text-sm">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-foreground">TypeForge</span>
+        <div className="flex items-center gap-1.5">
+          <Type className="h-4 w-4 text-foreground" />
+          <span className="font-semibold text-foreground">TypeForge</span>
+        </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShareOpen(true)} title="Share">
             <Share2 className="h-3.5 w-3.5" />
@@ -256,12 +259,9 @@ export default function ControlsPanel() {
             onClick={() => wrappedUpdateConfig({ baseFontSize: Math.max(10, config.baseFontSize - 1) })}>
             <Minus className="h-3 w-3" />
           </Button>
-          <Input type="number" min={10} max={24} value={config.baseFontSize}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              if (v >= 10 && v <= 24) wrappedUpdateConfig({ baseFontSize: v });
-            }}
-            className="h-7 text-center text-xs" />
+          <div className="flex h-7 flex-1 items-center justify-center rounded-md border border-input bg-background text-xs">
+            {config.baseFontSize}
+          </div>
           <Button variant="outline" size="icon" className="h-7 w-7 shrink-0"
             onClick={() => wrappedUpdateConfig({ baseFontSize: Math.min(24, config.baseFontSize + 1) })}>
             <Plus className="h-3 w-3" />
@@ -273,14 +273,37 @@ export default function ControlsPanel() {
       {/* Scale Ratio */}
       <div className="space-y-2">
         <Label className="text-xs">Scale Ratio</Label>
-        <Select value={String(config.scaleRatio)} onValueChange={(v) => wrappedUpdateConfig({ scaleRatio: Number(v) })}>
-          <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+        <Select
+          value={SCALE_RATIOS.some((r) => r.value === config.scaleRatio) ? String(config.scaleRatio) : "custom"}
+          onValueChange={(v) => {
+            if (v === "custom") wrappedUpdateConfig({ scaleRatio: 1.3 });
+            else wrappedUpdateConfig({ scaleRatio: Number(v) });
+          }}
+        >
+          <SelectTrigger className="h-7 text-xs">
+            <SelectValue>
+              {SCALE_RATIOS.some((r) => r.value === config.scaleRatio)
+                ? `${config.scaleRatio} (${SCALE_RATIOS.find((r) => r.value === config.scaleRatio)?.label})`
+                : `${config.scaleRatio} (Custom)`}
+            </SelectValue>
+          </SelectTrigger>
           <SelectContent>
             {SCALE_RATIOS.map((r) => (
               <SelectItem key={r.value} value={String(r.value)}>{r.value} ({r.label})</SelectItem>
             ))}
+            <SelectItem value="custom">Custom...</SelectItem>
           </SelectContent>
         </Select>
+        {!SCALE_RATIOS.some((r) => r.value === config.scaleRatio) && (
+          <Input
+            type="number" step={0.001} min={1} max={3} value={config.scaleRatio}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              if (v >= 1 && v <= 3) wrappedUpdateConfig({ scaleRatio: Math.round(v * 1000) / 1000 });
+            }}
+            className="h-7 text-xs" placeholder="e.g. 1.333"
+          />
+        )}
       </div>
 
       {/* Unit + Rounding */}
