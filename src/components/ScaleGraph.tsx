@@ -55,7 +55,10 @@ export default function ScaleGraph() {
                 borderRadius: "6px",
                 fontSize: 12,
                 color: "hsl(var(--popover-foreground))",
+                padding: "6px 10px",
               }}
+              labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+              itemStyle={{ color: "hsl(var(--popover-foreground))" }}
               formatter={(value: number, name: string) => [
                 `${value}px`,
                 name === "size" ? "Current" : "Compare",
@@ -67,7 +70,7 @@ export default function ScaleGraph() {
               ))}
             </Bar>
             {compareScale && (
-              <Bar dataKey="compareSize" radius={[0, 3, 3, 0]} maxBarSize={12} fill="hsl(var(--destructive))" opacity={0.5} />
+              <Bar dataKey="compareSize" radius={[0, 3, 3, 0]} maxBarSize={12} fill="hsl(199 89% 48%)" opacity={0.6} />
             )}
           </BarChart>
         </ResponsiveContainer>
