@@ -51,12 +51,15 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* Preview Mode Switcher */}
-      <div className="flex items-center justify-between border-b border-border px-4 h-10">
+      <div className="flex items-center justify-between border-b px-4 h-10"
+        style={{ borderColor: 'hsl(var(--border))' }}>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onCollapse} title="Collapse live preview">
             <PanelRightClose className="h-3.5 w-3.5" />
           </Button>
-          <span className="text-xs font-semibold text-foreground">Live Preview</span>
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))' }}>
+            Live Preview
+          </span>
         </div>
         <Select value={config.previewMode} onValueChange={(v) => updateConfig({ previewMode: v as PreviewMode })}>
           <SelectTrigger className="h-7 w-40 text-[11px]"><SelectValue /></SelectTrigger>
@@ -68,7 +71,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
         </Select>
       </div>
 
-      <div className="flex-1 overflow-auto bg-muted/30 p-6" style={{ color: baseStyle.color, fontFamily: baseStyle.fontFamily, fontWeight: baseStyle.fontWeight, lineHeight: baseStyle.lineHeight, letterSpacing: baseStyle.letterSpacing }}>
+      <div className="flex-1 overflow-auto p-6" style={{ backgroundColor: '#f0ece6', color: baseStyle.color, fontFamily: baseStyle.fontFamily, fontWeight: baseStyle.fontWeight, lineHeight: baseStyle.lineHeight, letterSpacing: baseStyle.letterSpacing }}>
         <div className="mx-auto max-w-4xl rounded-lg shadow-sm border border-border overflow-hidden" style={{ backgroundColor: config.body.backgroundColor }}>
           {/* Navbar */}
           <nav className="flex items-center justify-between border-b px-10 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
