@@ -73,6 +73,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   baseFontSize: 16,
   scaleRatio: 1.2,
   unit: "rem",
+  rounding: "none",
   body: {
     fontFamily: "Inter",
     fontWeight: 500,
