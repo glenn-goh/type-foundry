@@ -22,6 +22,19 @@ export default function ControlsPanel() {
   const [showLibrary, setShowLibrary] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeSource, setActiveSource] = useState<string | null>(null);
+
+  // Determine current active label
+  const activeLabel = (() => {
+    if (activeSource) return activeSource;
+    // Check if current config matches a preset
+    for (const [, preset] of Object.entries(PRESETS)) {
+      if (config.baseFontSize === preset.config.baseFontSize && config.scaleRatio === preset.config.scaleRatio) {
+        return preset.label;
+      }
+    }
+    return "Custom";
+  })();
 
   const shareUrl = (() => {
     const params = configToUrlParams(config);
@@ -39,6 +52,23 @@ export default function ControlsPanel() {
       saveSystem(saveName.trim());
       setSaveName("");
     }
+  };
+
+  const handleApplyPreset = (key: string) => {
+    applyPreset(PRESETS[key].config);
+    setActiveSource(PRESETS[key].label);
+  };
+
+  const handleLoadSystem = (id: string) => {
+    const sys = savedSystems.find((s) => s.id === id);
+    loadSystem(id);
+    if (sys) setActiveSource(sys.name);
+  };
+
+  // Clear active source when user manually changes settings
+  const wrappedUpdateConfig = (partial: Partial<typeof config>) => {
+    setActiveSource(null);
+    updateConfig(partial);
   };
 
   return (
