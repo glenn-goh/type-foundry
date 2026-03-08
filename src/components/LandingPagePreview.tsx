@@ -1,8 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
 import { calculateTypeScale, getFontFamilyStack } from "@/lib/scale-utils";
 import { PREVIEW_MODES, type PreviewMode } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PanelRightClose, PanelRightOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function LandingPagePreview() {
   const { config, updateConfig } = useAppConfig();
@@ -38,39 +40,60 @@ export default function LandingPagePreview() {
     letterSpacing: `${config.body.letterSpacing}em`,
   };
 
+  const [collapsed, setCollapsed] = useState(false);
+
+  if (collapsed) {
+    return (
+      <div className="flex h-full flex-col items-center border-l border-border bg-muted/30 pt-2">
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setCollapsed(false)} title="Expand live preview">
+          <PanelRightOpen className="h-4 w-4" />
+        </Button>
+        <span className="mt-2 text-[10px] text-muted-foreground [writing-mode:vertical-rl] rotate-180">Live Preview</span>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* Preview Mode Switcher */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-2">
-        <span className="text-xs font-semibold text-foreground">Live Preview</span>
-        <Select value={config.previewMode} onValueChange={(v) => updateConfig({ previewMode: v as PreviewMode })}>
-          <SelectTrigger className="h-7 w-40 text-[11px]"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            {PREVIEW_MODES.map((m) => (
-              <SelectItem key={m.value} value={m.value} className="text-xs">{m.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex items-center justify-between border-b border-border px-4 h-10">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-foreground">Live Preview</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Select value={config.previewMode} onValueChange={(v) => updateConfig({ previewMode: v as PreviewMode })}>
+            <SelectTrigger className="h-7 w-40 text-[11px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {PREVIEW_MODES.map((m) => (
+                <SelectItem key={m.value} value={m.value} className="text-xs">{m.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setCollapsed(true)} title="Collapse live preview">
+            <PanelRightClose className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto" style={baseStyle}>
-        {/* Navbar */}
-        <nav className="flex items-center justify-between border-b px-6 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
-          <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
-            Archway
-          </span>
-          <div className="hidden md:flex items-center gap-5">
-            {["Overview", "Solutions", "Resources", "Docs", "Blog"].map((item) => (
-              <span key={item} style={{ fontSize: `${sizeMap.small}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
-                {item}
-              </span>
-            ))}
-          </div>
-        </nav>
+      <div className="flex-1 overflow-auto bg-muted/30 p-6" style={{ color: baseStyle.color, fontFamily: baseStyle.fontFamily, fontWeight: baseStyle.fontWeight, lineHeight: baseStyle.lineHeight, letterSpacing: baseStyle.letterSpacing }}>
+        <div className="mx-auto max-w-4xl rounded-lg shadow-sm border border-border overflow-hidden" style={{ backgroundColor: config.body.backgroundColor }}>
+          {/* Navbar */}
+          <nav className="flex items-center justify-between border-b px-10 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
+            <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
+              Archway
+            </span>
+            <div className="hidden md:flex items-center gap-5">
+              {["Overview", "Solutions", "Resources", "Docs", "Blog"].map((item) => (
+                <span key={item} style={{ fontSize: `${sizeMap.small}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </nav>
 
         {/* Marketing */}
         {config.previewMode === "marketing" && (
-          <div className="mx-auto max-w-2xl flex flex-1 items-center px-6 py-10">
+          <div className="mx-auto max-w-2xl flex flex-1 items-center px-10 py-10">
             <div className="max-w-xl space-y-6">
               <h1 style={hStyle("h1")}>Ship faster with tools that scale</h1>
               <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
@@ -93,7 +116,7 @@ export default function LandingPagePreview() {
 
         {/* Article */}
         {config.previewMode === "article" && (
-          <article className="mx-auto max-w-2xl px-6 py-10 space-y-6">
+          <article className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <h1 style={hStyle("h1")}>The Evolution of Typography in Digital Design</h1>
             <p style={{ fontSize: `${sizeMap.h6}px` }} className="opacity-60">
               How modern type systems shape the way we read and interact with digital products.
@@ -121,7 +144,7 @@ export default function LandingPagePreview() {
 
         {/* Product UI */}
         {config.previewMode === "product" && (
-          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
+          <div className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <div className="flex items-center justify-between">
               <h2 style={hStyle("h3")}>Dashboard</h2>
               <button className="rounded-md px-3 py-1.5 text-xs font-medium"
@@ -164,7 +187,7 @@ export default function LandingPagePreview() {
 
         {/* Blog Feed */}
         {config.previewMode === "blog" && (
-          <div className="mx-auto max-w-2xl px-6 py-10 space-y-8">
+          <div className="mx-auto max-w-2xl px-10 py-10 space-y-8">
             <h1 style={hStyle("h2")}>Latest Posts</h1>
             {[
               { title: "Understanding Modular Type Scales", excerpt: "Why mathematical ratios create better visual hierarchy in your designs.", date: "Mar 7, 2026", tag: "Design" },
@@ -184,7 +207,7 @@ export default function LandingPagePreview() {
 
         {/* E-Commerce */}
         {config.previewMode === "ecommerce" && (
-          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
+          <div className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <div className="flex items-center justify-between">
               <h2 style={hStyle("h3")}>Featured Products</h2>
               <span style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50 cursor-pointer hover:opacity-80">View all →</span>
@@ -216,7 +239,7 @@ export default function LandingPagePreview() {
 
         {/* Documentation */}
         {config.previewMode === "documentation" && (
-          <div className="mx-auto max-w-2xl px-6 py-10 space-y-6">
+          <div className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <div className="space-y-1">
               <p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-40 uppercase tracking-wider font-medium">Getting Started</p>
               <h1 style={hStyle("h2")}>Installation</h1>
@@ -250,7 +273,7 @@ export default function LandingPagePreview() {
 
         {/* Portfolio */}
         {config.previewMode === "portfolio" && (
-          <div className="px-6 py-10 space-y-10 max-w-3xl mx-auto">
+          <div className="px-10 py-10 space-y-10 max-w-3xl mx-auto">
             <div className="space-y-3">
               <h1 style={hStyle("h1")}>Jane Cooper</h1>
               <p style={{ fontSize: `${sizeMap.h5}px` }} className="opacity-60">Product Designer & Creative Technologist</p>
@@ -276,6 +299,7 @@ export default function LandingPagePreview() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
