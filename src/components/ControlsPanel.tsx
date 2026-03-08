@@ -110,7 +110,7 @@ export default function ControlsPanel() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <Type className="h-4 w-4 text-foreground" />
-          <span className="font-semibold text-foreground">TypeForge</span>
+          <span className="font-semibold text-foreground">Type Foundry</span>
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShareOpen(true)} title="Share">

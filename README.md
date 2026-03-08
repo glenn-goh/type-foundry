@@ -1,73 +1,80 @@
-# Welcome to your Lovable project
+# Type Foundry
 
-## Project info
+A visual type scale design tool for crafting beautiful, consistent typography systems. Try it live at **[type-foundry.vercel.app](https://type-foundry.vercel.app/)**.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- **Type Scale Generator** — Set a base font size and scale ratio (Minor Second through Golden Ratio, or custom) to generate a harmonious type scale
+- **Compare Mode** — Overlay two scale ratios side-by-side to compare how they look in practice
+- **Live Preview** — See your type scale applied to real UI layouts: Marketing Page, Article, Product UI, Blog, E-Commerce, Documentation, and Portfolio
+- **Font Selector** — Choose from system fonts or 40+ Google Fonts for body and heading type
+- **Responsive Breakpoints** — Configure separate base sizes and ratios per breakpoint (Mobile, Tablet, Desktop)
+- **Presets** — Quickly load curated type systems: Editorial, Product UI, Marketing, Dense Dashboard, and Readable Blog
+- **Save & Load Systems** — Name and persist your type configurations in browser localStorage
+- **Export** — Copy or download your type scale as CSS variables, JSON tokens, Tailwind config, or Figma tokens
+- **Accessibility Panel** — Get scale density feedback and warnings about potential readability issues
+- **Share** — Generate a shareable URL that encodes your current configuration
+- **Light / Dark Mode** — Toggle between themes with automatic color adjustments
+- **Unit Support** — Switch between `rem`, `px`, and `pt` output
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/) component library
+- [Radix UI](https://www.radix-ui.com/) primitives
+- [Bun](https://bun.sh/) (recommended) or Node.js / npm
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Local Setup
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- [Node.js](https://nodejs.org/) v18+ (or [Bun](https://bun.sh/) v1+)
+- Git
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Steps
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# 1. Clone the repository
+git clone https://github.com/glenn-goh/typeforge.git
+cd typeforge
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Install dependencies
+bun install
+# or: npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# 3. Start the dev server
+bun run dev
+# or: npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Other commands
 
-**Use GitHub Codespaces**
+```sh
+# Production build
+bun run build
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Preview production build locally
+bun run preview
 
-## What technologies are used for this project?
+# Lint
+bun run lint
 
-This project is built with:
+# Run tests
+bun run test
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Deployment
 
-## How can I deploy this project?
+The project is deployed on Vercel. To deploy your own fork:
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+1. Push the repository to GitHub
+2. Import the project at [vercel.com/new](https://vercel.com/new)
+3. Vercel will auto-detect the Vite framework — no extra configuration needed
+4. Click **Deploy**
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+MIT
