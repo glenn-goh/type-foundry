@@ -116,7 +116,7 @@ export default function ControlsPanel() {
 
   const addStep = () => {
     const id = `custom-${Date.now()}`;
-    const newStep: ScaleStep = { id, label: id, isBase: false };
+    const newStep: ScaleStep = { id, label: "custom", isBase: false };
     updateSteps([...config.steps, newStep]);
   };
 

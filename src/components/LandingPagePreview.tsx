@@ -7,15 +7,15 @@ import { PanelRightClose, Monitor, Tablet, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TypeLabel from "@/components/TypeLabel";
 
+type ViewportMode = "mobile" | "tablet" | "desktop";
+const FRAME_WIDTHS: Record<ViewportMode, number | null> = { mobile: 390, tablet: 768, desktop: null };
+
 export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => void }) {
   const { config, updateConfig } = useAppConfig();
 
-  type ViewportMode = "mobile" | "tablet" | "desktop";
   const [viewport, setViewport] = useState<ViewportMode>("desktop");
   const [scaleFactor, setScaleFactor] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const FRAME_WIDTHS = { mobile: 390, tablet: 768, desktop: null } as const;
 
   const scale = useMemo(
     () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding, config.steps),
@@ -68,7 +68,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
       return;
     }
     const observer = new ResizeObserver(([entry]) => {
-      const available = entry.contentRect.width - 48;
+      const available = entry.contentRect.width - 24;
       setScaleFactor(Math.min(1, available / frameWidth));
     });
     observer.observe(containerRef.current);
