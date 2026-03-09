@@ -10,14 +10,14 @@ export default function ScaleGraph() {
   const compareColor = config.theme === "dark" ? "#E2A336" : "#AD791F";
 
   const scale = useMemo(
-    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
-    [config.baseFontSize, config.scaleRatio, config.rounding]
+    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding, config.steps),
+    [config.baseFontSize, config.scaleRatio, config.rounding, config.steps]
   );
 
   const compareScale = useMemo(() => {
     if (!config.compare.enabled) return null;
-    return calculateTypeScale(config.baseFontSize, config.compare.scaleRatio, config.rounding);
-  }, [config.baseFontSize, config.compare, config.rounding]);
+    return calculateTypeScale(config.baseFontSize, config.compare.scaleRatio, config.rounding, config.steps);
+  }, [config.baseFontSize, config.compare, config.rounding, config.steps]);
 
   const data = useMemo(() => {
     return [...scale].reverse().map((entry, i) => {

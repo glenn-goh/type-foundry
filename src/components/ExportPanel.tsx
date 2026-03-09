@@ -45,14 +45,14 @@ export default function ExportPanel({ scale }: { scale: ScaleEntry[] }) {
     const base = config.responsive.baseFontSize ?? config.baseFontSize;
     const ratio = config.responsive.inheritRatio ? config.scaleRatio : (config.responsive.scaleRatio ?? config.scaleRatio);
     return {
-      scale: calculateTypeScale(base, ratio, config.rounding),
+      scale: calculateTypeScale(base, ratio, config.rounding, config.steps),
       minWidth: config.responsive.minWidth,
     };
   }, [config]);
 
   const cssCode = useMemo(() => {
     if (config.responsive.enabled && config.responsive.breakpoints.length > 0) {
-      return generateResponsiveCss(config.responsive.breakpoints, config.unit, config.rounding);
+      return generateResponsiveCss(config.responsive.breakpoints, config.unit, config.rounding, config.steps);
     }
     return generateCssVariables(scale, config.unit, responsiveData);
   }, [scale, config.unit, responsiveData, config.responsive, config.rounding]);

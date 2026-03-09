@@ -66,13 +66,14 @@ export function generateCssVariables(
 export function generateResponsiveCss(
   breakpoints: BreakpointConfig[],
   unit: Unit,
-  rounding: RoundingGrid
+  rounding: RoundingGrid,
+  steps: ScaleStep[] = DEFAULT_STEPS
 ): string {
   const sorted = [...breakpoints].sort((a, b) => a.minWidth - b.minWidth);
   let css = "";
 
   sorted.forEach((bp, i) => {
-    const scale = calculateTypeScale(bp.baseFontSize, bp.scaleRatio, rounding);
+    const scale = calculateTypeScale(bp.baseFontSize, bp.scaleRatio, rounding, steps);
     const lines = scale.map(
       (e) => `  --font-size-${e.id}: ${formatValue(e, unit)};`
     );

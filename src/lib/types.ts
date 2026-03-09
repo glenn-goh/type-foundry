@@ -1,6 +1,5 @@
 export type Unit = "rem" | "px" | "pt";
 
-export type ScaleToken = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "small" | "xs";
 
 export interface ScaleStep {
   id: string;      // stable key used in CSS vars and exports; never changes after creation

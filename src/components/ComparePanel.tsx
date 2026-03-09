@@ -7,13 +7,13 @@ export default function ComparePanel() {
   const { config } = useAppConfig();
 
   const scaleA = useMemo(
-    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
-    [config.baseFontSize, config.scaleRatio, config.rounding]
+    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding, config.steps),
+    [config.baseFontSize, config.scaleRatio, config.rounding, config.steps]
   );
 
   const scaleB = useMemo(
-    () => calculateTypeScale(config.baseFontSize, config.compare.scaleRatio, config.rounding),
-    [config.baseFontSize, config.compare.scaleRatio, config.rounding]
+    () => calculateTypeScale(config.baseFontSize, config.compare.scaleRatio, config.rounding, config.steps),
+    [config.baseFontSize, config.compare.scaleRatio, config.rounding, config.steps]
   );
 
   const labelA = SCALE_RATIOS.find((r) => r.value === config.scaleRatio)?.label || String(config.scaleRatio);

@@ -8,9 +8,9 @@ export default function ResponsiveBreakpointPreview() {
   const breakpointScales = useMemo(() => {
     return config.responsive.breakpoints.map((bp) => ({
       ...bp,
-      scale: calculateTypeScale(bp.baseFontSize, bp.scaleRatio, config.rounding),
+      scale: calculateTypeScale(bp.baseFontSize, bp.scaleRatio, config.rounding, config.steps),
     }));
-  }, [config.responsive.breakpoints, config.rounding]);
+  }, [config.responsive.breakpoints, config.rounding, config.steps]);
 
   const tokens = breakpointScales[0]?.scale.map((e) => e.token) ?? [];
 
