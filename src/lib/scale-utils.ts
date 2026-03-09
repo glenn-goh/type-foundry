@@ -1,16 +1,5 @@
-import type { BreakpointConfig, RoundingGrid, ScaleEntry, ScaleToken, Unit } from "./types";
-
-const TOKEN_EXPONENTS: Record<ScaleToken, number> = {
-  h1: 6,
-  h2: 5,
-  h3: 4,
-  h4: 3,
-  h5: 2,
-  h6: 1,
-  p: 0,
-  small: -1,
-  xs: -2,
-};
+import type { BreakpointConfig, RoundingGrid, ScaleEntry, ScaleStep, Unit } from "./types";
+import { DEFAULT_STEPS } from "./types";
 
 function applyRounding(px: number, rounding: RoundingGrid): number {
   if (rounding === "none") return Math.round(px * 100) / 100;
@@ -18,17 +7,25 @@ function applyRounding(px: number, rounding: RoundingGrid): number {
   return Math.max(grid, Math.round(px / grid) * grid);
 }
 
-export function calculateTypeScale(base: number, ratio: number, rounding: RoundingGrid = "none"): ScaleEntry[] {
-  const tokens: ScaleToken[] = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "small", "xs"];
-  return tokens.map((token) => {
-    const exp = TOKEN_EXPONENTS[token];
+export function calculateTypeScale(
+  base: number,
+  ratio: number,
+  rounding: RoundingGrid = "none",
+  steps: ScaleStep[] = DEFAULT_STEPS
+): ScaleEntry[] {
+  const baseIndex = steps.findIndex((s) => s.isBase);
+  const pivot = baseIndex === -1 ? Math.floor(steps.length / 2) : baseIndex;
+  return steps.map((step, i) => {
+    const exp = pivot - i;
     const rawPx = base * Math.pow(ratio, exp);
     const px = applyRounding(rawPx, rounding);
     return {
-      token,
+      token: step.label,
+      id: step.id,
       px,
       rem: px / 16,
       pt: px * 0.75,
+      exponent: exp,
     };
   });
 }
@@ -55,11 +52,11 @@ export function generateCssVariables(
   unit: Unit,
   responsive?: { scale: ScaleEntry[]; minWidth: number }
 ): string {
-  const lines = scale.map((e) => `  --font-size-${e.token === "p" ? "body" : e.token}: ${formatValue(e, unit)};`);
+  const lines = scale.map((e) => `  --font-size-${e.id}: ${formatValue(e, unit)};`);
   let css = `:root {\n${lines.join("\n")}\n}`;
   if (responsive) {
     const rLines = responsive.scale.map(
-      (e) => `    --font-size-${e.token === "p" ? "body" : e.token}: ${formatValue(e, unit)};`
+      (e) => `    --font-size-${e.id}: ${formatValue(e, unit)};`
     );
     css += `\n\n@media (min-width: ${responsive.minWidth}px) {\n  :root {\n${rLines.join("\n")}\n  }\n}`;
   }
@@ -77,7 +74,7 @@ export function generateResponsiveCss(
   sorted.forEach((bp, i) => {
     const scale = calculateTypeScale(bp.baseFontSize, bp.scaleRatio, rounding);
     const lines = scale.map(
-      (e) => `  --font-size-${e.token === "p" ? "body" : e.token}: ${formatValue(e, unit)};`
+      (e) => `  --font-size-${e.id}: ${formatValue(e, unit)};`
     );
 
     if (i === 0) {
@@ -94,13 +91,13 @@ export function generateResponsiveCss(
 export function generateJsonTokens(scale: ScaleEntry[], unit: Unit): string {
   const obj: Record<string, string> = {};
   scale.forEach((e) => {
-    obj[e.token === "p" ? "body" : e.token] = formatValue(e, unit);
+    obj[e.id] = formatValue(e, unit);
   });
   return JSON.stringify({ fontSize: obj }, null, 2);
 }
 
 export function generateTailwindConfig(scale: ScaleEntry[], unit: Unit): string {
-  const lines = scale.map((e) => `  ${e.token === "p" ? "body" : e.token}: "${formatValue(e, unit)}",`);
+  const lines = scale.map((e) => `  ${e.id}: "${formatValue(e, unit)}",`);
   return `fontSize: {\n${lines.join("\n")}\n}`;
 }
 
@@ -110,12 +107,11 @@ export function generateFigmaTokens(
   body: { fontFamily: string; fontWeight: number; lineHeight: number; letterSpacing: number },
   headings: { inherit: boolean; fontFamily: string; fontWeight: number; lineHeight: number; letterSpacing: number }
 ): string {
-  const headingTokens = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
   const tokens: Record<string, Record<string, unknown>> = {};
 
   scale.forEach((e) => {
-    const name = e.token === "p" ? "body" : e.token;
-    const isHeading = headingTokens.has(e.token);
+    const name = e.id;
+    const isHeading = e.exponent > 0;
     const settings = isHeading && !headings.inherit ? headings : body;
 
     tokens[name] = {
