@@ -2,6 +2,24 @@ export type Unit = "rem" | "px" | "pt";
 
 export type ScaleToken = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "small" | "xs";
 
+export interface ScaleStep {
+  id: string;      // stable key used in CSS vars and exports; never changes after creation
+  label: string;   // editable display name shown in UI and scale table
+  isBase: boolean; // exactly one step has isBase=true; that step renders at baseFontSize
+}
+
+export const DEFAULT_STEPS: ScaleStep[] = [
+  { id: "h1",    label: "h1",    isBase: false },
+  { id: "h2",    label: "h2",    isBase: false },
+  { id: "h3",    label: "h3",    isBase: false },
+  { id: "h4",    label: "h4",    isBase: false },
+  { id: "h5",    label: "h5",    isBase: false },
+  { id: "h6",    label: "h6",    isBase: false },
+  { id: "p",     label: "p",     isBase: true  },
+  { id: "small", label: "small", isBase: false },
+  { id: "xs",    label: "xs",    isBase: false },
+];
+
 export type RoundingGrid = "none" | "4px" | "8px";
 
 export type PreviewMode = "marketing" | "article" | "product" | "blog" | "ecommerce" | "documentation" | "portfolio";
@@ -17,10 +35,12 @@ export const PREVIEW_MODES: { value: PreviewMode; label: string }[] = [
 ];
 
 export interface ScaleEntry {
-  token: ScaleToken;
+  token: string;    // display label (was ScaleToken)
+  id: string;       // stable step id for exports and sizeMap lookups
   px: number;
   rem: number;
   pt: number;
+  exponent: number; // positive = above base (heading-like), 0 = base, negative = below base
 }
 
 export interface BodySettings {
@@ -84,6 +104,7 @@ export interface AppConfig {
   responsive: ResponsiveSettings;
   compare: CompareSettings;
   theme: "light" | "dark";
+  steps: ScaleStep[];
 }
 
 export const SCALE_RATIOS = [
@@ -247,4 +268,5 @@ export const DEFAULT_CONFIG: AppConfig = {
     scaleRatio: 1.333,
   },
   theme: "light",
+  steps: DEFAULT_STEPS,
 };
