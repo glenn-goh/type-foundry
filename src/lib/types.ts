@@ -24,7 +24,7 @@ export type RoundingGrid = "none" | "4px" | "8px";
 export type PreviewMode = "marketing" | "article" | "product" | "blog" | "ecommerce" | "documentation" | "portfolio";
 
 export const PREVIEW_MODES: { value: PreviewMode; label: string }[] = [
-  { value: "marketing", label: "Marketing Page" },
+  { value: "marketing", label: "Marketing" },
   { value: "article", label: "Article" },
   { value: "product", label: "Product UI" },
   { value: "blog", label: "Blog Feed" },

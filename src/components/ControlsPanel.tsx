@@ -163,7 +163,7 @@ export default function ControlsPanel() {
       </Dialog>
 
       {/* Persistent Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b shrink-0"
+      <div className="flex items-center justify-between px-5 py-3 border-b shrink-0"
         style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
         <div className="flex items-center gap-2">
           <Type className="h-3.5 w-3.5" style={{ color: 'hsl(var(--sidebar-accent))' }} />
@@ -192,15 +192,15 @@ export default function ControlsPanel() {
       </div>
 
       {/* Accordion Sections */}
-      <Accordion type="multiple" defaultValue={["scale", "steps", "body", "headings"]} className="flex-1 overflow-auto">
+      <Accordion type="multiple" defaultValue={["scale"]} className="flex-1 overflow-auto">
 
         {/* ── SCALE ── */}
         <AccordionItem value="scale" className="border-b" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
-          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-white/5"
+          <AccordionTrigger className="px-5 py-3 hover:no-underline hover:bg-white/5"
             style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'hsl(var(--sidebar-muted))' }}>
             Scale
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4 pt-1 space-y-3">
+          <AccordionContent className="px-5 pb-4 pt-1 space-y-3">
 
             {/* Base Font Size */}
             <div className="space-y-1.5">
@@ -350,11 +350,11 @@ export default function ControlsPanel() {
 
         {/* ── STEPS ── */}
         <AccordionItem value="steps" className="border-b" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
-          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-white/5"
+          <AccordionTrigger className="px-5 py-3 hover:no-underline hover:bg-white/5"
             style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'hsl(var(--sidebar-muted))' }}>
             Steps
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4 pt-1 space-y-1.5">
+          <AccordionContent className="px-5 pb-4 pt-1 space-y-1.5">
             {config.steps.map((step, i) => (
               <div key={step.id} className="flex items-center gap-1.5">
                 {/* Up/Down reorder */}
@@ -427,11 +427,11 @@ export default function ControlsPanel() {
 
         {/* ── BODY ── */}
         <AccordionItem value="body" className="border-b" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
-          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-white/5"
+          <AccordionTrigger className="px-5 py-3 hover:no-underline hover:bg-white/5"
             style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'hsl(var(--sidebar-muted))' }}>
             Body
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4 pt-1 space-y-3">
+          <AccordionContent className="px-5 pb-4 pt-1 space-y-3">
 
             <div className="space-y-1.5">
               <label style={{ fontSize: '11px', color: 'hsl(var(--sidebar-muted))', display: 'block' }}>Font Family</label>
@@ -495,11 +495,11 @@ export default function ControlsPanel() {
 
         {/* ── HEADINGS ── */}
         <AccordionItem value="headings" className="border-b" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
-          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-white/5"
+          <AccordionTrigger className="px-5 py-3 hover:no-underline hover:bg-white/5"
             style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'hsl(var(--sidebar-muted))' }}>
             Headings
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4 pt-1 space-y-3">
+          <AccordionContent className="px-5 pb-4 pt-1 space-y-3">
 
             <div className="flex items-center justify-between">
               <label style={{ fontSize: '11px', color: 'hsl(var(--sidebar-muted))' }}>Inherit body</label>
@@ -556,11 +556,11 @@ export default function ControlsPanel() {
 
         {/* ── ADVANCED ── */}
         <AccordionItem value="advanced" className="border-b" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
-          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-white/5"
+          <AccordionTrigger className="px-5 py-3 hover:no-underline hover:bg-white/5"
             style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'hsl(var(--sidebar-muted))' }}>
             Advanced
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4 pt-1 space-y-4">
+          <AccordionContent className="px-5 pb-4 pt-1 space-y-4">
 
             {/* Responsive */}
             <div className="space-y-2">

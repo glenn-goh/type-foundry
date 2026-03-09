@@ -62,10 +62,14 @@ export default function ScaleGraph() {
               cursor={{ fill: "hsl(var(--muted-foreground) / 0.1)" }}
               labelStyle={{ color: "hsl(var(--popover-foreground))" }}
               itemStyle={{ color: "hsl(var(--popover-foreground))" }}
-              formatter={(value: number, name: string) => [
-                `${value}px`,
-                name === "size" ? "Current" : "Compare",
-              ]}
+              formatter={(value: number, name: string) => {
+                const u = config.unit;
+                const formatted =
+                  u === "rem" ? `${Math.round((value / 16) * 1000) / 1000}rem`
+                  : u === "pt" ? `${Math.round(value * 0.75 * 100) / 100}pt`
+                  : `${value}px`;
+                return [formatted, name === "size" ? "Current" : "Compare"];
+              }}
             />
             <Bar dataKey="size" radius={[0, 3, 3, 0]} maxBarSize={16}>
               {data.map((_, index) => (

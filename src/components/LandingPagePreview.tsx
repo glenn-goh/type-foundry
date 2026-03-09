@@ -17,12 +17,24 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
   const [scaleFactor, setScaleFactor] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // When responsive mode is on, derive base/ratio from the matching breakpoint
+  const breakpoints = config.responsive.breakpoints;
+  const activeBreakpoint = config.responsive.enabled
+    ? viewport === "mobile" ? breakpoints[0]
+      : viewport === "tablet" ? breakpoints[1]
+      : breakpoints[2]
+    : null;
+
+  const effectiveBase = activeBreakpoint?.baseFontSize ?? config.baseFontSize;
+  const effectiveRatio = activeBreakpoint?.scaleRatio ?? config.scaleRatio;
+
   const scale = useMemo(
-    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding, config.steps),
-    [config.baseFontSize, config.scaleRatio, config.rounding, config.steps]
+    () => calculateTypeScale(effectiveBase, effectiveRatio, config.rounding, config.steps),
+    [effectiveBase, effectiveRatio, config.rounding, config.steps]
   );
 
   const sizeMap = Object.fromEntries(scale.map((e) => [e.id, e.px]));
+  const cols3 = viewport === "desktop" ? "grid-cols-3" : "grid-cols-1";
 
   // Safe accessor: falls back to scale entry at fallbackIndex if id not found
   // (e.g. user deleted "h1" — falls back to the largest available step)
@@ -56,7 +68,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
 
   // Helper for inline-styled text with label
   const T = ({ token, children, className }: { token: string; children: React.ReactNode; className?: string }) => (
-    <TypeLabel token={token} size={sz(token)} className={className}>
+    <TypeLabel token={token} size={sz(token)} unit={config.unit} className={className}>
       {children}
     </TypeLabel>
   );
@@ -97,31 +109,63 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
 
       {/* Marketing */}
       {config.previewMode === "marketing" && (
-        <div className="mx-auto max-w-2xl flex flex-1 items-center px-10 py-10">
-          <div className="max-w-xl space-y-6">
-            <T token="h1"><h1 style={hStyle("h1")}>Ship faster with tools that scale</h1></T>
-            <T token="p">
-              <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-75">
-                From prototype to production in minutes. Archway gives your team the infrastructure to build, deploy, and iterate without limits.
-              </p>
-            </T>
-            <div className="flex flex-wrap items-center gap-3">
-              <T token="small">
-                <button className="rounded-lg px-5 py-2.5 font-medium transition-opacity hover:opacity-90"
-                  style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
-                  Start building
-                </button>
+        <>
+          {/* Hero */}
+          <div className="mx-auto max-w-2xl flex flex-1 items-center px-10 py-14">
+            <div className="max-w-xl space-y-6">
+              <T token="h1"><h1 style={hStyle("h1")}>Ship faster with tools that scale</h1></T>
+              <T token="p">
+                <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-75">
+                  From prototype to production in minutes. Archway gives your team the infrastructure to build, deploy, and iterate without limits.
+                </p>
               </T>
-              <T token="small">
-                <button className="rounded-lg border px-5 py-2.5 font-medium transition-opacity hover:opacity-80"
-                  style={{ fontSize: `${sz("small", 7)}px`, borderColor: `${config.body.textColor}30` }}>
-                  View docs
-                </button>
-              </T>
+              <div className="flex flex-wrap items-center gap-3">
+                <T token="small">
+                  <button className="rounded-lg px-5 py-2.5 font-medium transition-opacity hover:opacity-90"
+                    style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
+                    Start building
+                  </button>
+                </T>
+                <T token="small">
+                  <button className="rounded-lg border px-5 py-2.5 font-medium transition-opacity hover:opacity-80"
+                    style={{ fontSize: `${sz("small", 7)}px`, borderColor: `${config.body.textColor}30` }}>
+                    View docs
+                  </button>
+                </T>
+              </div>
+              <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-50">Free tier available · No setup needed</p></T>
             </div>
-            <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-50">Free tier available · No setup needed</p></T>
           </div>
-        </div>
+
+          {/* Features */}
+          <div className="border-t px-10 py-12 space-y-8" style={{ borderColor: `${config.body.textColor}10` }}>
+            <T token="h3"><h2 style={hStyle("h3")} className="text-center">Everything you need</h2></T>
+            <div className={`grid gap-6 ${cols3}`}>
+              {[
+                { title: "Instant Deploy", body: "Push to production with a single command. No config, no waiting." },
+                { title: "Auto Scaling", body: "Traffic spikes handled automatically. Your app stays fast under load." },
+                { title: "Observability", body: "Built-in metrics, logs, and traces. Know what's happening at a glance." },
+              ].map((feat) => (
+                <div key={feat.title} className="rounded-xl border p-6 space-y-2" style={{ borderColor: `${config.body.textColor}12` }}>
+                  <T token="h5"><h3 style={hStyle("h5")}>{feat.title}</h3></T>
+                  <T token="p"><p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-65">{feat.body}</p></T>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA band */}
+          <div className="px-10 py-14 text-center space-y-5" style={{ backgroundColor: `${config.body.textColor}05` }}>
+            <T token="h2"><h2 style={hStyle("h2")}>Ready to ship?</h2></T>
+            <T token="p"><p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-65 max-w-md mx-auto">Join 10,000+ teams already building on Archway. Set up your first project in under two minutes.</p></T>
+            <T token="small">
+              <button className="rounded-lg px-7 py-3 font-semibold transition-opacity hover:opacity-90"
+                style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
+                Get started for free
+              </button>
+            </T>
+          </div>
+        </>
       )}
 
       {/* Article */}
@@ -176,7 +220,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
               </button>
             </T>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className={`grid gap-4 ${cols3}`}>
             {[
               { label: "Active Users", value: "2,847", change: "+12.5%" },
               { label: "Revenue", value: "$48,290", change: "+8.2%" },
@@ -231,34 +275,81 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
 
       {/* E-Commerce */}
       {config.previewMode === "ecommerce" && (
-        <div className="mx-auto max-w-2xl px-10 py-10 space-y-6">
-          <div className="flex items-center justify-between">
-            <T token="h3"><h2 style={hStyle("h3")}>Featured Products</h2></T>
-            <T token="small"><span style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-50 cursor-pointer hover:opacity-80">View all →</span></T>
+        <div className="mx-auto max-w-2xl px-10 py-10 space-y-8">
+          {/* Category pills */}
+          <div className="space-y-3">
+            <T token="h3"><h2 style={hStyle("h3")}>Shop by Category</h2></T>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { label: "Lighting", count: 24 },
+                { label: "Furniture", count: 61 },
+                { label: "Accessories", count: 38 },
+                { label: "Storage", count: 17 },
+                { label: "Decor", count: 45 },
+              ].map((cat) => (
+                <T key={cat.label} token="small">
+                  <button className="rounded-full border px-4 py-1.5 transition-colors hover:opacity-80"
+                    style={{ fontSize: `${sz("small", 7)}px`, borderColor: `${config.body.textColor}20` }}>
+                    {cat.label}
+                    <span className="ml-1.5 opacity-40">{cat.count}</span>
+                  </button>
+                </T>
+              ))}
+            </div>
           </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            {[
-              { name: "Minimalist Desk Lamp", price: "$89.00", category: "Lighting" },
-              { name: "Ergonomic Office Chair", price: "$449.00", category: "Furniture" },
-              { name: "Wireless Keyboard Pro", price: "$129.00", category: "Accessories" },
-            ].map((product) => (
-              <div key={product.name} className="rounded-lg border overflow-hidden" style={{ borderColor: `${config.body.textColor}12` }}>
-                <div className="aspect-[4/3] flex items-center justify-center" style={{ backgroundColor: `${config.body.textColor}06` }}>
-                  <span style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-30 uppercase tracking-widest">Image</span>
-                </div>
-                <div className="p-4 space-y-1">
-                  <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40 uppercase tracking-wider">{product.category}</p></T>
-                  <T token="p"><h3 style={{ fontSize: `${sz("p", 6)}px`, fontFamily: headingFont, fontWeight: headingWeight }}>{product.name}</h3></T>
-                  <T token="h6"><p style={{ fontSize: `${sz("h6", 5)}px`, fontWeight: 600 }}>{product.price}</p></T>
-                  <T token="small">
-                    <button className="mt-2 w-full rounded-md py-2 text-center font-medium transition-opacity hover:opacity-90"
-                      style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
-                      Add to Cart
-                    </button>
-                  </T>
-                </div>
+
+          {/* Featured product — wide card */}
+          <div className="rounded-xl border overflow-hidden flex" style={{ borderColor: `${config.body.textColor}12` }}>
+            <div className="w-2/5 shrink-0 flex items-center justify-center" style={{ backgroundColor: `${config.body.textColor}06`, minHeight: 200 }}>
+              <span style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-25 uppercase tracking-widest">Image</span>
+            </div>
+            <div className="flex-1 p-6 space-y-3">
+              <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40 uppercase tracking-wider">Staff Pick · Furniture</p></T>
+              <T token="h4"><h3 style={hStyle("h4")}>Ergonomic Office Chair</h3></T>
+              <T token="p"><p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-60">Lumbar support, breathable mesh back, and 5-year warranty. Designed for all-day comfort.</p></T>
+              <div className="flex items-baseline gap-3">
+                <T token="h5"><span style={{ fontSize: `${sz("h5", 4)}px`, fontWeight: 700 }}>$449.00</span></T>
+                <T token="small"><span style={{ fontSize: `${sz("small", 7)}px` }} className="line-through opacity-35">$599.00</span></T>
               </div>
-            ))}
+              <T token="small">
+                <button className="rounded-md px-5 py-2 font-medium transition-opacity hover:opacity-90"
+                  style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
+                  Add to Cart
+                </button>
+              </T>
+            </div>
+          </div>
+
+          {/* Product grid */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <T token="h5"><h2 style={hStyle("h5")}>More Products</h2></T>
+              <T token="small"><span style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-50 cursor-pointer hover:opacity-80">View all →</span></T>
+            </div>
+            <div className={`grid gap-5 ${cols3}`}>
+              {[
+                { name: "Minimalist Desk Lamp", price: "$89.00", category: "Lighting" },
+                { name: "Cable Management Kit", price: "$34.00", category: "Accessories" },
+                { name: "Walnut Desk Organiser", price: "$67.00", category: "Storage" },
+              ].map((product) => (
+                <div key={product.name} className="rounded-lg border overflow-hidden" style={{ borderColor: `${config.body.textColor}12` }}>
+                  <div className="aspect-[4/3] flex items-center justify-center" style={{ backgroundColor: `${config.body.textColor}06` }}>
+                    <span style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-30 uppercase tracking-widest">Image</span>
+                  </div>
+                  <div className="p-4 space-y-1">
+                    <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40 uppercase tracking-wider">{product.category}</p></T>
+                    <T token="p"><h3 style={{ fontSize: `${sz("p", 6)}px`, fontFamily: headingFont, fontWeight: headingWeight }}>{product.name}</h3></T>
+                    <T token="h6"><p style={{ fontSize: `${sz("h6", 5)}px`, fontWeight: 600 }}>{product.price}</p></T>
+                    <T token="small">
+                      <button className="mt-2 w-full rounded-md py-2 text-center font-medium transition-opacity hover:opacity-90"
+                        style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
+                        Add to Cart
+                      </button>
+                    </T>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -311,7 +402,8 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
 
       {/* Portfolio */}
       {config.previewMode === "portfolio" && (
-        <div className="px-10 py-10 space-y-10 max-w-3xl mx-auto">
+        <div className="px-10 py-10 space-y-12 max-w-3xl mx-auto">
+          {/* Intro */}
           <div className="space-y-3">
             <T token="h1"><h1 style={hStyle("h1")}>Jane Cooper</h1></T>
             <T token="h5"><p style={{ fontSize: `${sz("h5", 4)}px` }} className="opacity-60">Product Designer & Creative Technologist</p></T>
@@ -321,6 +413,8 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
               </p>
             </T>
           </div>
+
+          {/* Selected Work */}
           <div className="space-y-6">
             <T token="h4"><h2 style={hStyle("h4")}>Selected Work</h2></T>
             {[
@@ -336,6 +430,37 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
                 <T token="small"><span style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-35 shrink-0 ml-4">{work.year}</span></T>
               </div>
             ))}
+          </div>
+
+          {/* About */}
+          <div className="space-y-4 border-t pt-10" style={{ borderColor: `${config.body.textColor}10` }}>
+            <T token="h4"><h2 style={hStyle("h4")}>About</h2></T>
+            <T token="p">
+              <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-70">
+                I've spent the past eight years designing products used by millions — from early-stage startups to teams inside Fortune 500 companies. My work sits at the boundary between design systems, interaction design, and front-end craft.
+              </p>
+            </T>
+            <T token="p">
+              <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-70">
+                Outside of work, I write about design tools, contribute to open source, and speak at conferences on the intersection of engineering and design culture.
+              </p>
+            </T>
+          </div>
+
+          {/* Contact */}
+          <div className="space-y-3 border-t pt-10" style={{ borderColor: `${config.body.textColor}10` }}>
+            <T token="h4"><h2 style={hStyle("h4")}>Get in touch</h2></T>
+            <T token="p">
+              <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-65">
+                Open to freelance projects, advisory roles, and interesting conversations. The best way to reach me is by email.
+              </p>
+            </T>
+            <T token="p">
+              <a href="#" className="underline underline-offset-2 opacity-70 hover:opacity-100 transition-opacity"
+                style={{ fontSize: `${sz("p", 6)}px` }}>
+                hello@janecooper.design
+              </a>
+            </T>
           </div>
         </div>
       )}
@@ -356,25 +481,45 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
           </span>
         </div>
         {/* Viewport toggle */}
-        <div className="flex items-center gap-0.5 rounded-md border p-0.5"
-          style={{ borderColor: 'hsl(var(--border))' }}>
-          {([
-            { mode: "mobile" as const,  Icon: Smartphone, label: "Mobile"  },
-            { mode: "tablet" as const,  Icon: Tablet,     label: "Tablet"  },
-            { mode: "desktop" as const, Icon: Monitor,    label: "Desktop" },
-          ]).map(({ mode, Icon, label }) => (
-            <button
-              key={mode}
-              onClick={() => setViewport(mode)}
-              title={label}
-              className="h-6 w-6 flex items-center justify-center rounded transition-colors"
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-0.5 rounded-md border p-0.5"
+            style={{ borderColor: 'hsl(var(--border))' }}>
+            {([
+              { mode: "mobile" as const,  Icon: Smartphone, label: "Mobile"  },
+              { mode: "tablet" as const,  Icon: Tablet,     label: "Tablet"  },
+              { mode: "desktop" as const, Icon: Monitor,    label: "Desktop" },
+            ]).map(({ mode, Icon, label }) => (
+              <button
+                key={mode}
+                onClick={() => setViewport(mode)}
+                title={label}
+                className="h-6 w-6 flex items-center justify-center rounded transition-colors"
+                style={{
+                  backgroundColor: viewport === mode ? 'hsl(var(--accent))' : 'transparent',
+                  color: viewport === mode ? 'hsl(var(--accent-foreground))' : 'hsl(var(--muted-foreground))',
+                }}>
+                <Icon className="h-3.5 w-3.5" />
+              </button>
+            ))}
+          </div>
+          {activeBreakpoint && (
+            <span
+              title={`Responsive: ${activeBreakpoint.label} — base ${activeBreakpoint.baseFontSize}px · ratio ${activeBreakpoint.scaleRatio}`}
               style={{
-                backgroundColor: viewport === mode ? 'hsl(var(--accent))' : 'transparent',
-                color: viewport === mode ? 'hsl(var(--accent-foreground))' : 'hsl(var(--muted-foreground))',
-              }}>
-              <Icon className="h-3.5 w-3.5" />
-            </button>
-          ))}
+                fontFamily: "'DM Mono', monospace",
+                fontSize: '9px',
+                color: 'hsl(var(--primary))',
+                backgroundColor: 'hsl(var(--primary) / 0.1)',
+                border: '1px solid hsl(var(--primary) / 0.25)',
+                borderRadius: 4,
+                padding: '1px 5px',
+                whiteSpace: 'nowrap',
+                cursor: 'default',
+              }}
+            >
+              {activeBreakpoint.baseFontSize}px · {activeBreakpoint.scaleRatio}
+            </span>
+          )}
         </div>
         <Select value={config.previewMode} onValueChange={(v) => updateConfig({ previewMode: v as PreviewMode })}>
           <SelectTrigger className="h-7 w-40 text-[11px]"><SelectValue /></SelectTrigger>

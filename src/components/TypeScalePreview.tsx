@@ -104,7 +104,7 @@ export default function TypeScalePreview() {
       <div className="flex-1 overflow-auto">
         {scale.map((entry) => (
           <TypeRow
-            key={entry.token}
+            key={entry.id}
             entry={entry}
             unit={config.unit}
             bodyStyle={bodyStyle}

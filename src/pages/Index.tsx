@@ -31,12 +31,12 @@ function AppShell() {
     <div className={`flex h-screen w-screen overflow-hidden flex-col bg-background lg:flex-row${config.theme === "dark" ? " dark" : ""}`}>
       <UrlParamLoader />
       <aside
-          className="w-full shrink-0 border-b lg:w-64 lg:min-w-[16rem] lg:max-w-[16rem] lg:border-b-0 lg:border-r"
+          className="w-full shrink-0 border-b lg:w-72 lg:min-w-[18rem] lg:max-w-[18rem] lg:border-b-0 lg:border-r"
           style={{ backgroundColor: 'hsl(var(--sidebar-background))', borderColor: 'hsl(var(--sidebar-border))' }}
         >
-        <ScrollArea className="h-full max-h-[40vh] lg:max-h-screen">
+        <div className="h-full max-h-[40vh] lg:max-h-screen overflow-auto no-scrollbar">
           <ControlsPanel />
-        </ScrollArea>
+        </div>
       </aside>
 
       <div className="flex-1 min-w-0 min-h-0 overflow-hidden flex">
