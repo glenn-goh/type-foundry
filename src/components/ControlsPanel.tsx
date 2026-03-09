@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppConfig } from "@/context/AppConfigContext";
-import { SCALE_RATIOS, PRESETS, type RoundingGrid } from "@/lib/types";
+import { SCALE_RATIOS, PRESETS, DEFAULT_STEPS, type RoundingGrid, type ScaleStep } from "@/lib/types";
 import { configToUrlParams } from "@/lib/scale-utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,14 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, Copy, Check, Type } from "lucide-react";
+import { RotateCcw, Sun, Moon, Minus, Plus, Share2, Save, Trash2, Copy, Check, Type, ChevronUp, ChevronDown, X } from "lucide-react";
 import FontSelector from "@/components/FontSelector";
 
 export default function ControlsPanel() {
   const {
     config, updateConfig, updateBody, updateHeadings, updateResponsive,
     updateCompare, resetConfig, applyPreset, savedSystems, saveSystem, loadSystem, deleteSystem,
+    updateSteps,
   } = useAppConfig();
 
   const [saveName, setSaveName] = useState("");
@@ -90,6 +91,40 @@ export default function ControlsPanel() {
     updateHeadings(partial);
   };
 
+  const moveStep = (index: number, direction: "up" | "down") => {
+    const steps = [...config.steps];
+    const target = direction === "up" ? index - 1 : index + 1;
+    if (target < 0 || target >= steps.length) return;
+    [steps[index], steps[target]] = [steps[target], steps[index]];
+    updateSteps(steps);
+  };
+
+  const removeStep = (index: number) => {
+    if (config.steps.length <= 1) return;
+    const steps = config.steps.filter((_, i) => i !== index);
+    if (config.steps[index].isBase) {
+      const newBaseIndex = Math.min(index, steps.length - 1);
+      steps[newBaseIndex] = { ...steps[newBaseIndex], isBase: true };
+    }
+    updateSteps(steps);
+  };
+
+  const renameStep = (index: number, label: string) => {
+    const steps = config.steps.map((s, i) => i === index ? { ...s, label } : s);
+    updateSteps(steps);
+  };
+
+  const addStep = () => {
+    const id = `custom-${Date.now()}`;
+    const newStep: ScaleStep = { id, label: id, isBase: false };
+    updateSteps([...config.steps, newStep]);
+  };
+
+  const setBase = (index: number) => {
+    const steps = config.steps.map((s, i) => ({ ...s, isBase: i === index }));
+    updateSteps(steps);
+  };
+
   return (
     <div className="flex flex-col h-full" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
@@ -157,7 +192,7 @@ export default function ControlsPanel() {
       </div>
 
       {/* Accordion Sections */}
-      <Accordion type="multiple" defaultValue={["scale", "body", "headings"]} className="flex-1 overflow-auto">
+      <Accordion type="multiple" defaultValue={["scale", "steps", "body", "headings"]} className="flex-1 overflow-auto">
 
         {/* ── SCALE ── */}
         <AccordionItem value="scale" className="border-b" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
@@ -310,6 +345,83 @@ export default function ControlsPanel() {
               Reset to defaults
             </button>
 
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* ── STEPS ── */}
+        <AccordionItem value="steps" className="border-b" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
+          <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-white/5"
+            style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'hsl(var(--sidebar-muted))' }}>
+            Steps
+          </AccordionTrigger>
+          <AccordionContent className="px-4 pb-4 pt-1 space-y-1.5">
+            {config.steps.map((step, i) => (
+              <div key={step.id} className="flex items-center gap-1.5">
+                {/* Up/Down reorder */}
+                <div className="flex flex-col">
+                  <button
+                    onClick={() => moveStep(i, "up")}
+                    disabled={i === 0}
+                    className="h-3.5 w-4 flex items-center justify-center rounded disabled:opacity-20"
+                    style={{ color: 'hsl(var(--sidebar-muted))' }}>
+                    <ChevronUp className="h-3 w-3" />
+                  </button>
+                  <button
+                    onClick={() => moveStep(i, "down")}
+                    disabled={i === config.steps.length - 1}
+                    className="h-3.5 w-4 flex items-center justify-center rounded disabled:opacity-20"
+                    style={{ color: 'hsl(var(--sidebar-muted))' }}>
+                    <ChevronDown className="h-3 w-3" />
+                  </button>
+                </div>
+
+                {/* Editable label */}
+                <input
+                  value={step.label}
+                  onChange={(e) => renameStep(i, e.target.value)}
+                  className="flex-1 h-7 rounded-md border px-2"
+                  style={{
+                    borderColor: 'hsl(var(--sidebar-border))',
+                    backgroundColor: 'hsl(var(--sidebar-surface))',
+                    color: 'hsl(var(--sidebar-foreground))',
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: '11px',
+                    outline: 'none',
+                  }} />
+
+                {/* Base indicator */}
+                <button
+                  onClick={() => !step.isBase && setBase(i)}
+                  title={step.isBase ? "Base step (renders at baseFontSize)" : "Set as base"}
+                  className="h-5 w-5 flex items-center justify-center rounded-full text-[9px] font-bold shrink-0"
+                  style={{
+                    backgroundColor: step.isBase ? 'hsl(var(--sidebar-accent))' : 'transparent',
+                    color: step.isBase ? 'hsl(var(--sidebar-background))' : 'hsl(var(--sidebar-muted))',
+                    border: `1px solid ${step.isBase ? 'hsl(var(--sidebar-accent))' : 'hsl(var(--sidebar-border))'}`,
+                    cursor: step.isBase ? 'default' : 'pointer',
+                  }}>
+                  B
+                </button>
+
+                {/* Remove */}
+                <button
+                  onClick={() => removeStep(i)}
+                  disabled={config.steps.length <= 1}
+                  className="h-5 w-5 flex items-center justify-center rounded disabled:opacity-20"
+                  style={{ color: 'hsl(var(--sidebar-muted))' }}>
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+
+            {/* Add step */}
+            <button
+              onClick={addStep}
+              className="flex items-center gap-1 mt-2 transition-opacity hover:opacity-100"
+              style={{ fontSize: '10px', color: 'hsl(var(--sidebar-muted))', opacity: 0.6 }}>
+              <Plus className="h-3 w-3" />
+              Add step
+            </button>
           </AccordionContent>
         </AccordionItem>
 
