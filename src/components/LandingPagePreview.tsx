@@ -10,11 +10,16 @@ import TypeLabel from "@/components/TypeLabel";
 export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => void }) {
   const { config, updateConfig } = useAppConfig();
   const scale = useMemo(
-    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
-    [config.baseFontSize, config.scaleRatio, config.rounding]
+    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding, config.steps),
+    [config.baseFontSize, config.scaleRatio, config.rounding, config.steps]
   );
 
-  const sizeMap = Object.fromEntries(scale.map((e) => [e.token, e.px]));
+  const sizeMap = Object.fromEntries(scale.map((e) => [e.id, e.px]));
+
+  // Safe accessor: falls back to scale entry at fallbackIndex if id not found
+  // (e.g. user deleted "h1" — falls back to the largest available step)
+  const sz = (id: string, fallbackIndex = 0): number =>
+    sizeMap[id] ?? scale[Math.min(fallbackIndex, scale.length - 1)]?.px ?? config.baseFontSize;
 
   const bodyFont = getFontFamilyStack(config.body.fontFamily);
   const headingFont = config.headings.inherit ? bodyFont : getFontFamilyStack(config.headings.fontFamily);
@@ -24,7 +29,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
   const headingColor = config.headings.inherit ? config.body.textColor : config.headings.color;
 
   const hStyle = (token: string): React.CSSProperties => ({
-    fontSize: `${sizeMap[token]}px`,
+    fontSize: `${sz(token)}px`,
     fontFamily: headingFont,
     fontWeight: headingWeight,
     lineHeight: headingLH,
@@ -43,7 +48,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
 
   // Helper for inline-styled text with label
   const T = ({ token, children, className }: { token: string; children: React.ReactNode; className?: string }) => (
-    <TypeLabel token={token} size={sizeMap[token]} className={className}>
+    <TypeLabel token={token} size={sz(token)} className={className}>
       {children}
     </TypeLabel>
   );
@@ -76,14 +81,14 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
           {/* Navbar */}
           <nav className="flex items-center justify-between border-b px-10 py-3" style={{ borderColor: `${config.body.textColor}15` }}>
             <T token="h5">
-              <span style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
+              <span style={{ fontSize: `${sz("h5", 4)}px`, fontFamily: headingFont, fontWeight: headingWeight, color: headingColor }}>
                 Archway
               </span>
             </T>
             <div className="flex items-center gap-5">
               {["Overview", "Docs", "Blog"].map((item) => (
                 <T key={item} token="small">
-                  <span style={{ fontSize: `${sizeMap.small}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
+                  <span style={{ fontSize: `${sz("small", 7)}px` }} className="cursor-pointer opacity-70 transition-opacity hover:opacity-100">
                     {item}
                   </span>
                 </T>
@@ -97,25 +102,25 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
             <div className="max-w-xl space-y-6">
               <T token="h1"><h1 style={hStyle("h1")}>Ship faster with tools that scale</h1></T>
               <T token="p">
-                <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
+                <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-75">
                   From prototype to production in minutes. Archway gives your team the infrastructure to build, deploy, and iterate without limits.
                 </p>
               </T>
               <div className="flex flex-wrap items-center gap-3">
                 <T token="small">
                   <button className="rounded-lg px-5 py-2.5 font-medium transition-opacity hover:opacity-90"
-                    style={{ fontSize: `${sizeMap.small}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
+                    style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
                     Start building
                   </button>
                 </T>
                 <T token="small">
                   <button className="rounded-lg border px-5 py-2.5 font-medium transition-opacity hover:opacity-80"
-                    style={{ fontSize: `${sizeMap.small}px`, borderColor: `${config.body.textColor}30` }}>
+                    style={{ fontSize: `${sz("small", 7)}px`, borderColor: `${config.body.textColor}30` }}>
                     View docs
                   </button>
                 </T>
               </div>
-              <T token="xs"><p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-50">Free tier available · No setup needed</p></T>
+              <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-50">Free tier available · No setup needed</p></T>
             </div>
           </div>
         )}
@@ -125,35 +130,35 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
           <article className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <T token="h1"><h1 style={hStyle("h1")}>The Evolution of Typography in Digital Design</h1></T>
             <T token="h6">
-              <p style={{ fontSize: `${sizeMap.h6}px` }} className="opacity-60">
+              <p style={{ fontSize: `${sz("h6", 5)}px` }} className="opacity-60">
                 How modern type systems shape the way we read and interact with digital products.
               </p>
             </T>
             <hr style={{ borderColor: `${config.body.textColor}15` }} />
             <T token="p">
-              <p style={{ fontSize: `${sizeMap.p}px` }}>
+              <p style={{ fontSize: `${sz("p", 6)}px` }}>
                 Typography is the backbone of any well-crafted interface. It establishes hierarchy, guides the reader's eye, and communicates tone before a single word is consciously read.
               </p>
             </T>
             <T token="h2"><h2 style={hStyle("h2")}>Building a Type Scale</h2></T>
             <T token="p">
-              <p style={{ fontSize: `${sizeMap.p}px` }}>
+              <p style={{ fontSize: `${sz("p", 6)}px` }}>
                 A modular scale provides a predictable set of font sizes derived from a base value and a ratio. This mathematical relationship ensures visual harmony across an interface.
               </p>
             </T>
             <T token="h5">
-              <blockquote className="border-l-2 pl-4 italic opacity-70" style={{ borderColor: `${config.body.textColor}30`, fontSize: `${sizeMap.h5}px` }}>
+              <blockquote className="border-l-2 pl-4 italic opacity-70" style={{ borderColor: `${config.body.textColor}30`, fontSize: `${sz("h5", 4)}px` }}>
                 "The details are not the details. They make the design."
               </blockquote>
             </T>
             <T token="h3"><h3 style={hStyle("h3")}>Choosing the Right Ratio</h3></T>
             <T token="p">
-              <p style={{ fontSize: `${sizeMap.p}px` }}>
+              <p style={{ fontSize: `${sz("p", 6)}px` }}>
                 Smaller ratios like the Major Second (1.125) create tight, uniform scales perfect for data-dense applications. Larger ratios produce dramatic contrast ideal for editorial contexts.
               </p>
             </T>
             <T token="small">
-              <p style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50">
+              <p style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-50">
                 Published on March 8, 2026 · 5 min read
               </p>
             </T>
@@ -167,7 +172,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
               <T token="h3"><h2 style={hStyle("h3")}>Dashboard</h2></T>
               <T token="small">
                 <button className="rounded-md px-3 py-1.5 text-xs font-medium"
-                  style={{ backgroundColor: config.body.textColor, color: config.body.backgroundColor, fontSize: `${sizeMap.small}px` }}>
+                  style={{ backgroundColor: config.body.textColor, color: config.body.backgroundColor, fontSize: `${sz("small", 7)}px` }}>
                   New Project
                 </button>
               </T>
@@ -179,9 +184,9 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
                 { label: "Conversion", value: "3.24%", change: "-0.4%" },
               ].map((card) => (
                 <div key={card.label} className="rounded-lg border p-4" style={{ borderColor: `${config.body.textColor}15` }}>
-                  <T token="small"><p style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50">{card.label}</p></T>
+                  <T token="small"><p style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-50">{card.label}</p></T>
                   <T token="h4"><p style={{ ...hStyle("h4") }} className="mt-1">{card.value}</p></T>
-                  <T token="xs"><p style={{ fontSize: `${sizeMap.xs}px` }} className="mt-1 opacity-60">{card.change} from last month</p></T>
+                  <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="mt-1 opacity-60">{card.change} from last month</p></T>
                 </div>
               ))}
             </div>
@@ -195,10 +200,10 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
               ].map((item, i) => (
                 <div key={i} className="flex items-center justify-between border-b py-2.5 last:border-0" style={{ borderColor: `${config.body.textColor}10` }}>
                   <div>
-                    <T token="p"><p style={{ fontSize: `${sizeMap.p}px`, fontWeight: 500 }}>{item.title}</p></T>
-                    <T token="small"><p style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50">{item.desc}</p></T>
+                    <T token="p"><p style={{ fontSize: `${sz("p", 6)}px`, fontWeight: 500 }}>{item.title}</p></T>
+                    <T token="small"><p style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-50">{item.desc}</p></T>
                   </div>
-                  <T token="xs"><span style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-40">{item.time}</span></T>
+                  <T token="xs"><span style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40">{item.time}</span></T>
                 </div>
               ))}
             </div>
@@ -216,10 +221,10 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
               { title: "Accessibility in Type Design", excerpt: "Line height, contrast, and font size minimums that actually matter.", date: "Feb 22, 2026", tag: "Accessibility" },
             ].map((post, i) => (
               <article key={i} className="space-y-2 border-b pb-6 last:border-0" style={{ borderColor: `${config.body.textColor}10` }}>
-                <T token="xs"><span style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-40 uppercase tracking-wider font-medium">{post.tag}</span></T>
+                <T token="xs"><span style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40 uppercase tracking-wider font-medium">{post.tag}</span></T>
                 <T token="h4"><h2 style={hStyle("h4")} className="cursor-pointer hover:opacity-80 transition-opacity">{post.title}</h2></T>
-                <T token="p"><p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-65">{post.excerpt}</p></T>
-                <T token="xs"><p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-40">{post.date}</p></T>
+                <T token="p"><p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-65">{post.excerpt}</p></T>
+                <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40">{post.date}</p></T>
               </article>
             ))}
           </div>
@@ -230,7 +235,7 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
           <div className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <div className="flex items-center justify-between">
               <T token="h3"><h2 style={hStyle("h3")}>Featured Products</h2></T>
-              <T token="small"><span style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50 cursor-pointer hover:opacity-80">View all →</span></T>
+              <T token="small"><span style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-50 cursor-pointer hover:opacity-80">View all →</span></T>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               {[
@@ -240,15 +245,15 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
               ].map((product) => (
                 <div key={product.name} className="rounded-lg border overflow-hidden" style={{ borderColor: `${config.body.textColor}12` }}>
                   <div className="aspect-[4/3] flex items-center justify-center" style={{ backgroundColor: `${config.body.textColor}06` }}>
-                    <span style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-30 uppercase tracking-widest">Image</span>
+                    <span style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-30 uppercase tracking-widest">Image</span>
                   </div>
                   <div className="p-4 space-y-1">
-                    <T token="xs"><p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-40 uppercase tracking-wider">{product.category}</p></T>
-                    <T token="p"><h3 style={{ fontSize: `${sizeMap.p}px`, fontFamily: headingFont, fontWeight: headingWeight }}>{product.name}</h3></T>
-                    <T token="h6"><p style={{ fontSize: `${sizeMap.h6}px`, fontWeight: 600 }}>{product.price}</p></T>
+                    <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40 uppercase tracking-wider">{product.category}</p></T>
+                    <T token="p"><h3 style={{ fontSize: `${sz("p", 6)}px`, fontFamily: headingFont, fontWeight: headingWeight }}>{product.name}</h3></T>
+                    <T token="h6"><p style={{ fontSize: `${sz("h6", 5)}px`, fontWeight: 600 }}>{product.price}</p></T>
                     <T token="small">
                       <button className="mt-2 w-full rounded-md py-2 text-center font-medium transition-opacity hover:opacity-90"
-                        style={{ fontSize: `${sizeMap.small}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
+                        style={{ fontSize: `${sz("small", 7)}px`, backgroundColor: config.body.textColor, color: config.body.backgroundColor }}>
                         Add to Cart
                       </button>
                     </T>
@@ -263,27 +268,27 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
         {config.previewMode === "documentation" && (
           <div className="mx-auto max-w-2xl px-10 py-10 space-y-6">
             <div className="space-y-1">
-              <T token="xs"><p style={{ fontSize: `${sizeMap.xs}px` }} className="opacity-40 uppercase tracking-wider font-medium">Getting Started</p></T>
+              <T token="xs"><p style={{ fontSize: `${sz("xs", 8)}px` }} className="opacity-40 uppercase tracking-wider font-medium">Getting Started</p></T>
               <T token="h2"><h1 style={hStyle("h2")}>Installation</h1></T>
             </div>
             <T token="p">
-              <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
+              <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-75">
                 Follow these steps to install and configure the library in your project.
               </p>
             </T>
             <T token="small">
-              <div className="rounded-md border p-4 font-mono" style={{ borderColor: `${config.body.textColor}15`, backgroundColor: `${config.body.textColor}05`, fontSize: `${sizeMap.small}px` }}>
+              <div className="rounded-md border p-4 font-mono" style={{ borderColor: `${config.body.textColor}15`, backgroundColor: `${config.body.textColor}05`, fontSize: `${sz("small", 7)}px` }}>
                 npm install @archway/core
               </div>
             </T>
             <T token="h4"><h2 style={hStyle("h4")}>Configuration</h2></T>
             <T token="p">
-              <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
+              <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-75">
                 Create a configuration file in your project root. The library will automatically detect and load it.
               </p>
             </T>
             <T token="small">
-              <div className="rounded-md border p-4 font-mono" style={{ borderColor: `${config.body.textColor}15`, backgroundColor: `${config.body.textColor}05`, fontSize: `${sizeMap.small}px` }}>
+              <div className="rounded-md border p-4 font-mono" style={{ borderColor: `${config.body.textColor}15`, backgroundColor: `${config.body.textColor}05`, fontSize: `${sz("small", 7)}px` }}>
                 <div>{"// archway.config.ts"}</div>
                 <div>{"export default {"}</div>
                 <div className="pl-4">{"theme: 'default',"}</div>
@@ -293,13 +298,13 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
             </T>
             <T token="h4"><h2 style={hStyle("h4")}>Usage</h2></T>
             <T token="p">
-              <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-75">
+              <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-75">
                 Import components and use them in your application. All components support theming and are fully accessible.
               </p>
             </T>
             <T token="small">
               <div className="rounded-md border p-3" style={{ borderColor: `${config.body.textColor}15` }}>
-                <p style={{ fontSize: `${sizeMap.small}px` }} className="opacity-50">💡 Tip: Use the CLI to scaffold new components quickly.</p>
+                <p style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-50">💡 Tip: Use the CLI to scaffold new components quickly.</p>
               </div>
             </T>
           </div>
@@ -310,9 +315,9 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
           <div className="px-10 py-10 space-y-10 max-w-3xl mx-auto">
             <div className="space-y-3">
               <T token="h1"><h1 style={hStyle("h1")}>Jane Cooper</h1></T>
-              <T token="h5"><p style={{ fontSize: `${sizeMap.h5}px` }} className="opacity-60">Product Designer & Creative Technologist</p></T>
+              <T token="h5"><p style={{ fontSize: `${sz("h5", 4)}px` }} className="opacity-60">Product Designer & Creative Technologist</p></T>
               <T token="p">
-                <p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-50 max-w-lg">
+                <p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-50 max-w-lg">
                   Crafting thoughtful digital experiences at the intersection of design and engineering. Currently at Archway.
                 </p>
               </T>
@@ -326,10 +331,10 @@ export default function LandingPagePreview({ onCollapse }: { onCollapse?: () => 
               ].map((work, i) => (
                 <div key={i} className="flex items-start justify-between border-b pb-5 last:border-0" style={{ borderColor: `${config.body.textColor}10` }}>
                   <div className="space-y-1">
-                    <T token="h5"><h3 style={{ fontSize: `${sizeMap.h5}px`, fontFamily: headingFont, fontWeight: headingWeight }}>{work.title}</h3></T>
-                    <T token="p"><p style={{ fontSize: `${sizeMap.p}px` }} className="opacity-55">{work.desc}</p></T>
+                    <T token="h5"><h3 style={{ fontSize: `${sz("h5", 4)}px`, fontFamily: headingFont, fontWeight: headingWeight }}>{work.title}</h3></T>
+                    <T token="p"><p style={{ fontSize: `${sz("p", 6)}px` }} className="opacity-55">{work.desc}</p></T>
                   </div>
-                  <T token="small"><span style={{ fontSize: `${sizeMap.small}px` }} className="opacity-35 shrink-0 ml-4">{work.year}</span></T>
+                  <T token="small"><span style={{ fontSize: `${sz("small", 7)}px` }} className="opacity-35 shrink-0 ml-4">{work.year}</span></T>
                 </div>
               ))}
             </div>
