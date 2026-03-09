@@ -51,8 +51,8 @@ export default function TypeScalePreview() {
   const { config } = useAppConfig();
   const [previewText, setPreviewText] = useState(DEFAULT_PREVIEW_TEXT);
   const scale = useMemo(
-    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding),
-    [config.baseFontSize, config.scaleRatio, config.rounding]
+    () => calculateTypeScale(config.baseFontSize, config.scaleRatio, config.rounding, config.steps),
+    [config.baseFontSize, config.scaleRatio, config.rounding, config.steps]
   );
 
   const bodyStyle: React.CSSProperties = {
@@ -70,8 +70,6 @@ export default function TypeScalePreview() {
         lineHeight: config.headings.lineHeight,
         letterSpacing: `${config.headings.letterSpacing}em`,
       };
-
-  const headingTokens = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
 
   return (
     <div className="flex h-full flex-col">
@@ -111,7 +109,7 @@ export default function TypeScalePreview() {
             unit={config.unit}
             bodyStyle={bodyStyle}
             headingStyle={headingStyle}
-            isHeading={headingTokens.has(entry.token)}
+            isHeading={entry.exponent > 0}
             previewText={previewText || DEFAULT_PREVIEW_TEXT}
           />
         ))}
