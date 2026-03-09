@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import type { AppConfig, SavedSystem } from "@/lib/types";
-import { DEFAULT_CONFIG } from "@/lib/types";
+import type { AppConfig, SavedSystem, ScaleStep } from "@/lib/types";
+import { DEFAULT_CONFIG, DEFAULT_STEPS } from "@/lib/types";
 import { loadGoogleFont } from "@/lib/scale-utils";
 
 interface AppConfigContextType {
@@ -10,6 +10,7 @@ interface AppConfigContextType {
   updateHeadings: (partial: Partial<AppConfig["headings"]>) => void;
   updateResponsive: (partial: Partial<AppConfig["responsive"]>) => void;
   updateCompare: (partial: Partial<AppConfig["compare"]>) => void;
+  updateSteps: (steps: ScaleStep[]) => void;
   resetConfig: () => void;
   applyPreset: (config: Partial<AppConfig>) => void;
   savedSystems: SavedSystem[];
@@ -35,6 +36,9 @@ function loadConfig(): AppConfig {
         headings: { ...DEFAULT_CONFIG.headings, ...(parsed.headings || {}) },
         responsive: { ...DEFAULT_CONFIG.responsive, ...(parsed.responsive || {}) },
         compare: { ...DEFAULT_CONFIG.compare, ...(parsed.compare || {}) },
+        steps: Array.isArray(parsed.steps) && parsed.steps.length > 0
+          ? parsed.steps
+          : DEFAULT_STEPS,
       };
     }
   } catch {}
@@ -93,6 +97,10 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
       setConfig((prev) => ({ ...prev, compare: { ...prev.compare, ...partial } })),
     []
   );
+  const updateSteps = useCallback(
+    (steps: ScaleStep[]) => setConfig((prev) => ({ ...prev, steps })),
+    []
+  );
   const resetConfig = useCallback(() => {
     setConfig(DEFAULT_CONFIG);
     localStorage.removeItem(STORAGE_KEY);
@@ -131,7 +139,7 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppConfigContext.Provider value={{
       config, updateConfig, updateBody, updateHeadings, updateResponsive,
-      updateCompare, resetConfig, applyPreset, savedSystems, saveSystem, loadSystem, deleteSystem,
+      updateCompare, updateSteps, resetConfig, applyPreset, savedSystems, saveSystem, loadSystem, deleteSystem,
     }}>
       {children}
     </AppConfigContext.Provider>
